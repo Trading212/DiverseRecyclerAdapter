@@ -1,0 +1,1 @@
+# diverse-recycler-adapter
