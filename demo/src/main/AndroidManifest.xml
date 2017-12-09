@@ -16,6 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".samples.HomogeneousListActivity" />
+        <activity android:name=".samples.HeterogeneousActivity" />
     </application>
 
 </manifest>

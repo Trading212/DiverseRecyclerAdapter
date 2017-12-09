@@ -1,12 +1,17 @@
 package com.trading212.demo
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
+import com.trading212.demo.item.ActivityChooserRecyclerItem
+import com.trading212.demo.samples.HeterogeneousActivity
+import com.trading212.demo.samples.HomogeneousListActivity
+import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override fun fillElements(adapter: DiverseRecyclerAdapter) {
+
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Homogeneous Items", HomogeneousListActivity::class.java)), false)
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Heterogeneous Items", HeterogeneousActivity::class.java)), false)
+
+        adapter.notifyDataSetChanged()
     }
 }
