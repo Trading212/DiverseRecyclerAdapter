@@ -37,8 +37,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, ViewHolder<*>>>(position).id
 
-    override fun onCreateViewHolder(parent: ViewGroup,
-                                    viewType: Int): ViewHolder<*> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<*> {
 
         Log.i(TAG, "Creating ViewHolder of type " + viewType)
 
@@ -51,8 +50,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         throw IllegalStateException("Unsupported item view type: $viewType")
     }
 
-    override fun onBindViewHolder(holder: ViewHolder<*>,
-                                  position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder<*>, position: Int) {
 
         Log.i(TAG, "Binding data for ViewHolder type ${holder.itemViewType} at position $position")
 
@@ -305,8 +303,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         getItem<RecyclerItem<*, *>>(it).itemType == viewType
     } ?: -1
 
-    private fun insertItemInternal(position: Int,
-                                   item: RecyclerItem<*, ViewHolder<*>>?) {
+    private fun insertItemInternal(position: Int, item: RecyclerItem<*, ViewHolder<*>>?) {
         if (position < 0 || position > itemCount) {
             throw IndexOutOfBoundsException("Invalid insertion position: $position. Adapter size is $itemCount")
         }
@@ -342,8 +339,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the touched [RecyclerItem] in the adapter
          */
-        fun onItemClicked(v: View,
-                          position: Int)
+        fun onItemClicked(v: View, position: Int)
 
         /**
          * Called on item touch event
@@ -356,9 +352,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          *
          * **NOTE:** Returning `true` will stop triggering of subsequent gesture events like [View.OnClickListener.onClick]
          */
-        fun onItemTouched(v: View,
-                          event: MotionEvent,
-                          position: Int): Boolean = false
+        fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
     }
 
     abstract class RecyclerItem<T, out VH : ViewHolder<T>> {
@@ -397,8 +391,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          *
          * @see android.support.v7.widget.RecyclerView.Adapter.onCreateViewHolder
          */
-        protected abstract fun createViewHolder(parent: ViewGroup,
-                                                inflater: LayoutInflater): VH
+        protected abstract fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): VH
 
         internal fun createViewHolderInternal(parent: ViewGroup): VH = createViewHolder(parent, LayoutInflater.from(parent.context))
     }
