@@ -1,6 +1,5 @@
 package com.trading212.diverserecycleradapter
 
-import android.support.annotation.CallSuper
 import android.support.annotation.CheckResult
 import android.support.annotation.IdRes
 import android.support.annotation.IntRange
@@ -12,15 +11,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
-import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter.ViewHolder
 import java.util.*
 
-/**
- * **Note:** Use [NeatLinearLayoutManager] in the hosting RecyclerView([RecyclerView.setLayoutManager])
- * in order to have [DiverseRecyclerAdapter] work correctly. Otherwise [ViewHolder.onAttachedToWindow]/[ViewHolder.onDetachedFromWindow]
- * will not be called when the hosting RecyclerView is attached to/detached from window
- */
 class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewHolder<*>>(), Filterable {
+
+    companion object {
+
+        private val TAG = DiverseRecyclerAdapter::class.java.simpleName
+    }
+
+    /**
+     * Listener to receive item click events.
+     */
+    var onItemClickListener: OnItemClickListener? = null
 
     private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
@@ -28,8 +31,6 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     private val itemTypeItemMap = HashMap<Int, RecyclerItem<*, ViewHolder<*>>>()
 
     private var filter: Filter? = null
-
-    private var onItemClickListener: OnItemClickListener? = null
 
     override fun getItemCount(): Int = recyclerItems.size
 
@@ -72,6 +73,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun onViewRecycled(holder: ViewHolder<*>) {
 
+        Log.i(TAG, "Unbinding ViewHolder with type ${holder.itemViewType} at position ${holder.layoutPosition}")
+
         holder.unbindInternal()
 
         super.onViewRecycled(holder)
@@ -81,12 +84,16 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         super.onViewAttachedToWindow(holder)
 
-        holder.onAttachedToWindow()
+        Log.i(TAG, "Item at position ${holder.layoutPosition} attached to window")
+
+        holder.onAttachedToWindowInternal()
     }
 
     override fun onViewDetachedFromWindow(holder: ViewHolder<*>) {
 
-        holder.onDetachedFromWindow()
+        holder.onDetachedFromWindowInternal()
+
+        Log.i(TAG, "Item at position ${holder.layoutPosition} detached from window")
 
         super.onViewDetachedFromWindow(holder)
     }
@@ -95,13 +102,6 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     fun setFilter(filter: Filter) {
         this.filter = filter
-    }
-
-    /**
-     * Listener to receive item click events.
-     */
-    fun setOnItemClickListener(itemClickListener: OnItemClickListener) {
-        this.onItemClickListener = itemClickListener
     }
 
     /**
@@ -309,7 +309,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
 
         if (item != null) {
-            recyclerItems[position] = item
+            if (position == recyclerItems.size) {
+                recyclerItems.add(item)
+            } else {
+                recyclerItems[position] = item
+            }
 
             if (itemTypeItemMap[item.itemType] == null) {
                 itemTypeItemMap[item.itemType] = item
@@ -331,7 +335,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         return removed
     }
 
-    interface OnItemClickListener {
+    abstract class OnItemClickListener {
 
         /**
          * Called on itemView click event
@@ -339,7 +343,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the touched [RecyclerItem] in the adapter
          */
-        fun onItemClicked(v: View, position: Int)
+        abstract fun onItemClicked(v: View, position: Int)
 
         /**
          * Called on item touch event
@@ -352,7 +356,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          *
          * **NOTE:** Returning `true` will stop triggering of subsequent gesture events like [View.OnClickListener.onClick]
          */
-        fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
+        open fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
     }
 
     abstract class RecyclerItem<T, out VH : ViewHolder<T>> {
@@ -375,7 +379,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @see android.support.v7.widget.RecyclerView.Adapter.getItemViewType
          */
         @get:IntRange(from = 0, to = Integer.MAX_VALUE.toLong())
-        abstract val itemType: Int
+        open val itemType: Int
+            get() = 0
 
         /**
          * An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed in [ViewHolder.bindTo]
@@ -429,11 +434,12 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          *
          * @see RecyclerView.Adapter.onViewAttachedToWindow
          */
-        @CallSuper
-        open fun onAttachedToWindow() {
+        protected open fun onAttachedToWindow() {}
+
+        internal fun onAttachedToWindowInternal() {
             isAttached = true
 
-            Log.i(TAG, "Item at position $layoutPosition attached to window")
+            onAttachedToWindow()
         }
 
         /**
@@ -444,11 +450,12 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          *
          * @see RecyclerView.Adapter.onViewDetachedFromWindow
          */
-        @CallSuper
-        open fun onDetachedFromWindow() {
+        protected open fun onDetachedFromWindow() {}
+
+        internal fun onDetachedFromWindowInternal() {
             isAttached = false
 
-            Log.i(TAG, "Item at position $layoutPosition detached from window")
+            onDetachedFromWindow()
         }
 
         /**
@@ -504,10 +511,5 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
              */
             fun onDragEnd()
         }
-    }
-
-    companion object {
-
-        private val TAG = DiverseRecyclerAdapter::class.java.simpleName
     }
 }
