@@ -117,13 +117,13 @@ adapter.findFirstViewTypePosition(SimpleTextRecyclerItem.TYPE);
 ```java
 adapter.findLastViewTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
-- Getting reference to RecyclerItem by position
+- Get reference to RecyclerItem by position
 ```java
 if (adapter.getItemViewType(4) == SimpleTextRecyclerItem.TYPE) {
     SimpleTextRecyclerItem textRecyclerItem = adapter.getItem(4);
 }
 ````
-- Handling RecyclerItem events
+- Handle RecyclerItem events
 ```java
 adapter.setOnItemClickListener(new DiverseRecyclerAdapter.OnItemClickListener() {
     @Override
