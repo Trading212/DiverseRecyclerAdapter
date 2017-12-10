@@ -26,7 +26,7 @@ class HeterogeneousActivity : BaseActivity() {
             }
         }
 
-        adapter.addItems(items, true)
+        adapter.addItems(items)
 
         adapter.onItemClickListener = object : DiverseRecyclerAdapter.OnItemClickListener() {
 
