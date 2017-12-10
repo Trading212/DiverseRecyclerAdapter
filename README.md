@@ -28,6 +28,8 @@ public class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> {
 }
 ```
 
+#### ViewHolder lifecycle
+
 ![ViewHolder lifecycle](docs/ViewHolderLifecycle.png)
 
 ### RecyclerItem
@@ -79,9 +81,17 @@ for (int i = 0; i < 30; i++) {
 }  
 adapter.addItems(items);
 ```
-- Insert item
+- Insert single item
 ```java
 adapter.insertItem(5, new SimpleTextRecyclerItem("Item Text"));
+```
+- Insert multiple items
+```java
+List<SimpleTextRecyclerItem> items = new ArrayList<>(30);
+for (int i = 0; i < 30; i++) {
+    items.add(new SimpleTextRecyclerItem("Item " + i));
+}  
+adapter.insertItems(5, items);
 ```
 - Move item
 ```java
@@ -99,11 +109,11 @@ adapter.removeRange(0, 5);
 ```java
 adapter.removeAll();
 ```
-- Find first RecyclerItem position, i.e. the first item of specific category
+- Find first RecyclerItem position of the pecified viewType, i.e. the position of the first item of a category
 ```java
 adapter.findFirstViewTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
-- Find last RecyclerItem position, i.e. the last item of specific category
+- Find last RecyclerItem position of the pecified viewType, i.e. the position of the last item of a category
 ```java
 adapter.findLastViewTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
@@ -124,4 +134,4 @@ Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
-limitations under the License.§
+limitations under the License.
