@@ -117,8 +117,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param item The item to add
      * @param notifyAdapter Whether to notify the adapter about the change
      */
+    @JvmOverloads
     fun addItem(item: RecyclerItem<*, ViewHolder<*>>,
-                notifyAdapter: Boolean) {
+                notifyAdapter: Boolean = true) {
 
         insertItem(itemCount, item, notifyAdapter)
     }
@@ -129,8 +130,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param items The items to add
      * @param notifyAdapter Whether to notify the adapter about the change
      */
+    @JvmOverloads
     fun addItems(items: List<RecyclerItem<*, ViewHolder<*>>>,
-                 notifyAdapter: Boolean) {
+                 notifyAdapter: Boolean = true) {
 
         insertItems(itemCount, items, notifyAdapter)
     }
@@ -141,7 +143,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param notifyAdapter Whether to notify the adapter about the change
      * @param items The items to add
      */
-    fun addItems(notifyAdapter: Boolean,
+    @JvmOverloads
+    fun addItems(notifyAdapter: Boolean = true,
                  vararg items: RecyclerItem<*, ViewHolder<*>>) {
 
         insertItems(itemCount, listOf(*items), notifyAdapter)
@@ -154,9 +157,10 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param item The item to insert
      * @param notifyAdapter Whether to notify the adapter about the change
      */
+    @JvmOverloads
     fun insertItem(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
                    item: RecyclerItem<*, ViewHolder<*>>,
-                   notifyAdapter: Boolean) {
+                   notifyAdapter: Boolean = true) {
 
         insertItemInternal(position, item)
 
@@ -172,9 +176,10 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param items The items to insert
      * @param notifyAdapter Whether to notify the adapter about the change
      */
+    @JvmOverloads
     fun insertItems(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
                     items: List<RecyclerItem<*, ViewHolder<*>>>,
-                    notifyAdapter: Boolean) {
+                    notifyAdapter: Boolean = true) {
 
         if (!items?.isEmpty()) {
             for (i in items.indices) {
@@ -196,8 +201,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param notifyAdapter Whether to notify the adapter about the change
      * @param items The items to insert
      */
+    @JvmOverloads
     fun insertItems(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
-                    notifyAdapter: Boolean,
+                    notifyAdapter: Boolean = true,
                     vararg items: RecyclerItem<*, *>) {
 
         insertItems(position, listOf(*items), notifyAdapter)
@@ -211,8 +217,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The removed [RecyclerItem] or null if not found
      */
+    @JvmOverloads
     fun removeItem(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
-                   notifyAdapter: Boolean): RecyclerItem<*, *>? {
+                   notifyAdapter: Boolean = true): RecyclerItem<*, *>? {
 
         val removedItem = removeItemInternal(position)
         if (removedItem != null && notifyAdapter) {
@@ -231,9 +238,10 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The list of removed items. If there were no removed items, the list will be empty
      */
+    @JvmOverloads
     fun removeRange(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) startPosition: Int,
                     @IntRange(from = 1, to = Integer.MAX_VALUE.toLong()) count: Int,
-                    notifyAdapter: Boolean): List<RecyclerItem<*, ViewHolder<*>>> {
+                    notifyAdapter: Boolean = true): List<RecyclerItem<*, ViewHolder<*>>> {
 
         if (startPosition < 0 || startPosition + count > itemCount) {
             throw IndexOutOfBoundsException("Invalid deletion range [$startPosition, ${startPosition + count}). Adapter count is $itemCount")
@@ -261,7 +269,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The list of removed items. If there were no removed items, the list will be empty
      */
-    fun removeAll(notifyAdapter: Boolean): List<RecyclerItem<*, ViewHolder<*>>> = removeRange(0, itemCount, notifyAdapter)
+    @JvmOverloads
+    fun removeAll(notifyAdapter: Boolean = true): List<RecyclerItem<*, ViewHolder<*>>> = removeRange(0, itemCount, notifyAdapter)
 
     /**
      * Moves the [RecyclerItem] at the `fromPosition` to the position, specified by `toPosition`
@@ -270,9 +279,10 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param toPosition The final position of the [RecyclerItem]
      * @param notifyAdapter Whether to notify the adapter about the change
      */
+    @JvmOverloads
     fun moveItem(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) fromPosition: Int,
                  @IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) toPosition: Int,
-                 notifyAdapter: Boolean) {
+                 notifyAdapter: Boolean = true) {
 
         Collections.swap(recyclerItems, fromPosition, toPosition)
 
