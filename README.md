@@ -117,6 +117,26 @@ adapter.findFirstViewTypePosition(SimpleTextRecyclerItem.TYPE);
 ```java
 adapter.findLastViewTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
+- Getting reference to RecyclerItem by position
+```java
+if (adapter.getItemViewType(4) == SimpleTextRecyclerItem.TYPE) {
+    SimpleTextRecyclerItem textRecyclerItem = adapter.getItem(4);
+}
+````
+- Handling RecyclerItem events
+```java
+adapter.setOnItemClickListener(new DiverseRecyclerAdapter.OnItemClickListener() {
+    @Override
+    public void onItemClicked(@NotNull View v, int position) {
+        // Handle itemView click
+    }
+    @Override
+    public boolean onItemTouched(@NotNull View v, @NotNull MotionEvent event, int position) {
+        // Handle itemView touch events
+        return super.onItemTouched(v, event, position);
+    }
+});
+```
 
 *For more details, explore and run the **demo** module, as well as the library itself*
 
