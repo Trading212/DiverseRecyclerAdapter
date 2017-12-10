@@ -9,8 +9,8 @@ class MainActivity : BaseActivity() {
 
     override fun fillElements(adapter: DiverseRecyclerAdapter) {
 
-        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Homogeneous Items", HomogeneousListActivity::class.java)), false)
-        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Heterogeneous Items", HeterogeneousActivity::class.java)), false)
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Homogeneous List", HomogeneousListActivity::class.java)), false)
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Heterogeneous List", HeterogeneousActivity::class.java)), false)
 
         adapter.notifyDataSetChanged()
     }
