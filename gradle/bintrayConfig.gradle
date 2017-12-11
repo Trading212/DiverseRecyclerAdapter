@@ -12,8 +12,8 @@ ext {
     siteUrl = 'https://github.com/Trading212/diverse-recycler-adapter'
     gitRepoUrl = 'https://github.com/Trading212/diverse-recycler-adapter.git'
 
-    developerId = 'trading212'
-    developerName = 'Trading 212'
+    developerId = 'svetlin-mollov'
+    developerName = 'Svetlin Mollov'
     developerEmail = 'svetlin.mollov@trading212.com'
 
     licenseName = 'The Apache Software License, Version 2.0'
