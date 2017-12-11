@@ -1,8 +1,8 @@
 # Diverse Recycler Adapter
 
-TODO add library description
+DiverseRecyclerAdapter is a small and yet powerful library, which greatly simplifies bulding lists of different item types, by breaking each item type into separate class called `RecyclerItem`. This way the complexity of supporting multiple item types is moved out of the adapter, which makes the code easier to write, easier to maintain and better encapsulated. DiverseRecyclerAdapter provides a set of useful functions witch does everything you would want to do with a list - add, insert, move, remove, find item(s).
 
-Written in Kotlin, with full Java interoperability support
+Written in Kotlin, with full Java interoperability
 
 ## Getting Started
 
