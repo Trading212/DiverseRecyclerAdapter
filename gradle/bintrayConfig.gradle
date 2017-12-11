@@ -7,7 +7,7 @@ ext {
     artifact = 'diverse-recycler-adapter'
 
     libraryVersion = '0.5.0'
-    libraryDescription = 'RecyclerView adapter'
+    libraryDescription = 'A small and yet powerful library, which greatly simplifies building lists of different items'
 
     siteUrl = 'https://github.com/Trading212/diverse-recycler-adapter'
     gitRepoUrl = 'https://github.com/Trading212/diverse-recycler-adapter.git'
