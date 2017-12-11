@@ -1,8 +1,14 @@
+[ ![Download](https://api.bintray.com/packages/svetlin-mollov/maven/diverse-recycler-adapter/images/download.svg) ](https://bintray.com/svetlin-mollov/maven/diverse-recycler-adapter/_latestVersion)
+
 # Diverse Recycler Adapter
 
 DiverseRecyclerAdapter is a small and yet powerful library, which greatly simplifies building lists of different items, by breaking each item type into separate class called `RecyclerItem`. This way the complexity of supporting multiple item types is moved out of the adapter, which makes the code easier to write, easier to maintain and better encapsulated. DiverseRecyclerAdapter provides a set of useful functions witch does everything you would want to do with a list - add, insert, move, remove, find item(s).
 
 Written in Kotlin, with full Java interoperability
+
+## Installation
+
+```compile 'com.trading212:diverse-recycler-adapter:0.5.0'```
 
 ## Getting Started
 
