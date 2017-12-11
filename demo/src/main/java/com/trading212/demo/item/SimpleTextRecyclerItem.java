@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, SimpleTextRecyclerItem.ViewHolder> {
 
-    // Using Enum ordinal positions to guarantee uniqueness of itemType
+    // Using Enum ordinal positions to guarantee uniqueness of item type
     public static final int TYPE = ItemType.SIMPLE_TEXT.ordinal();
 
     private String text;
@@ -27,7 +27,7 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
     }
 
     @Override
-    public int getItemType() {
+    public int getType() {
         return TYPE;
     }
 

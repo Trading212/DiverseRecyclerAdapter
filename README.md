@@ -8,7 +8,7 @@ Written in Kotlin, with full Java interoperability support
 
 ### ViewHolder
 
-The well-known ViewHolder pattern. For more details see [Android Documentation](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.ViewHolder.html).
+The well-known `ViewHolder` pattern. For more details see [Android Documentation](https://developer.android.com/reference/android/support/v7/widget/RecyclerView.ViewHolder.html).
 
 ```java
 public class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> {
@@ -34,7 +34,7 @@ public class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> {
 
 ### RecyclerItem
 
-The ```RecyclerItem``` class describes a category(all items of the same type) in the adapter. It contains the data about a single item in the adapter, as well as factory method for creating ```ViewHolder```s for that category.
+The `RecyclerItem` class describes a category(all items of the same type) in the adapter. It contains the data about a single item, as well as factory method for creating `ViewHolder`s for that category.
 
 ```java
 public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, ViewHolder> {
@@ -48,7 +48,7 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
     }
 
     @Override
-    public int getItemType() {
+    public int getType() {
         return TYPE;
     }
 
@@ -69,7 +69,7 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
 ### Working with DiverseRecyclerAdapter
 
-- Add single item
+- Add item
 ```java
 adapter.addItem(new SimpleTextRecyclerItem("Item Text"));
 ```
@@ -81,7 +81,7 @@ for (int i = 0; i < 30; i++) {
 }  
 adapter.addItems(items);
 ```
-- Insert single item
+- Insert item
 ```java
 adapter.insertItem(5, new SimpleTextRecyclerItem("Item Text"));
 ```
@@ -97,7 +97,7 @@ adapter.insertItems(5, items);
 ```java
 adapter.moveItem(3, 4);
 ```
-- Remove single item
+- Remove item
 ```java
 adapter.removeItem(4);
 ```
@@ -109,21 +109,21 @@ adapter.removeRange(0, 5);
 ```java
 adapter.removeAll();
 ```
-- Find first RecyclerItem position of the pecified viewType, i.e. the position of the first item of a category
+- Find the position of the first `RecyclerItem` with the specified type, i.e. the position of the first item of a category
 ```java
-adapter.findFirstViewTypePosition(SimpleTextRecyclerItem.TYPE);
+adapter.findFirstItemTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
-- Find last RecyclerItem position of the pecified viewType, i.e. the position of the last item of a category
+- Find the position of the last `RecyclerItem` with the specified type, i.e. the position of the last item of a category
 ```java
-adapter.findLastViewTypePosition(SimpleTextRecyclerItem.TYPE);
+adapter.findLastItemTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
-- Get reference to RecyclerItem by position
+- Get a reference to `RecyclerItem` by position
 ```java
 if (adapter.getItemViewType(4) == SimpleTextRecyclerItem.TYPE) {
     SimpleTextRecyclerItem textRecyclerItem = adapter.getItem(4);
 }
 ````
-- Handle RecyclerItem events
+- Handle `itemView` events
 ```java
 adapter.setOnItemClickListener(new DiverseRecyclerAdapter.OnItemClickListener() {
     @Override

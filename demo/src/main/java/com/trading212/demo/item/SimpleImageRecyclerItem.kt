@@ -17,7 +17,7 @@ class SimpleImageRecyclerItem : DiverseRecyclerAdapter.RecyclerItem<Nothing, Sim
         val TYPE = ItemType.SIMPLE_IMAGE.ordinal
     }
 
-    override val itemType: Int
+    override val type: Int
         get() = TYPE
 
     override val data: Nothing?

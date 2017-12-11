@@ -27,14 +27,14 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
-    // Used for optimizing the search of RecyclerItem by itemType
+    // Used for optimizing the search of RecyclerItem by type
     private val itemTypeItemMap = HashMap<Int, RecyclerItem<*, ViewHolder<*>>>()
 
     private var filter: Filter? = null
 
     override fun getItemCount(): Int = recyclerItems.size
 
-    override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, ViewHolder<*>>>(position).itemType
+    override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, ViewHolder<*>>>(position).type
 
     override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, ViewHolder<*>>>(position).id
 
@@ -42,18 +42,18 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         Log.i(TAG, "Creating ViewHolder of type " + viewType)
 
-        // Get an instance of RecyclerItem of the specified viewType. It will be used as factory for ViewHolders
+        // Get an instance of RecyclerItem of the specified type. It will be used as factory for ViewHolders
         val recyclerItem = itemTypeItemMap[viewType]
         if (recyclerItem != null) {
             return recyclerItem.createViewHolderInternal(parent)
         }
 
-        throw IllegalStateException("Unsupported item view type: $viewType")
+        throw IllegalStateException("Unsupported item type: $viewType")
     }
 
     override fun onBindViewHolder(holder: ViewHolder<*>, position: Int) {
 
-        Log.i(TAG, "Binding data for ViewHolder type ${holder.itemViewType} at position $position")
+        Log.i(TAG, "Binding data for ViewHolder with type ${holder.itemViewType} at position $position")
 
         val item = getItem<RecyclerItem<*, ViewHolder<*>>>(position)
 
@@ -292,25 +292,25 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     /**
-     * Finds the position of the first item with the specified viewType
+     * Finds the position of the first item with the specified type
      *
-     * @param viewType The view type of the [RecyclerItem]
+     * @param itemType The item type of the [RecyclerItem]
      *
-     * @return The index of the first [RecyclerItem] with the specified viewType or -1 if not found
+     * @return The index of the first [RecyclerItem] with the specified type or -1 if not found
      */
-    fun findFirstViewTypePosition(viewType: Int): Int = recyclerItems.indices.firstOrNull {
-        getItem<RecyclerItem<*, *>>(it).itemType == viewType
+    fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull {
+        getItem<RecyclerItem<*, *>>(it).type == itemType
     } ?: -1
 
     /**
-     * Finds the position of the last item with the specified viewType
+     * Finds the position of the last item with the specified type
      *
-     * @param viewType The view type of the [RecyclerItem]
+     * @param itemType The item type of the [RecyclerItem]
      *
-     * @return The index of the last [RecyclerItem] with the specified viewType or -1 if not found
+     * @return The index of the last [RecyclerItem] with the specified type or -1 if not found
      */
-    fun findLastViewTypePosition(viewType: Int): Int = recyclerItems.indices.reversed().firstOrNull {
-        getItem<RecyclerItem<*, *>>(it).itemType == viewType
+    fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull {
+        getItem<RecyclerItem<*, *>>(it).type == itemType
     } ?: -1
 
     private fun insertItemInternal(position: Int, item: RecyclerItem<*, ViewHolder<*>>?) {
@@ -325,8 +325,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                 recyclerItems[position] = item
             }
 
-            if (itemTypeItemMap[item.itemType] == null) {
-                itemTypeItemMap[item.itemType] = item
+            if (itemTypeItemMap[item.type] == null) {
+                itemTypeItemMap[item.type] = item
             }
         } else {
             Log.e(TAG, "Trying to insert null item at position $position")
@@ -338,8 +338,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         val removed = recyclerItems.removeAt(position)
 
         // Clear cached category RecyclerItem, if this is the last item of the category
-        if (removed != null && findFirstViewTypePosition(removed.itemType) < 0) {
-            itemTypeItemMap.remove(removed.itemType)
+        if (removed != null && findFirstItemTypePosition(removed.type) < 0) {
+            itemTypeItemMap.remove(removed.type)
         }
 
         return removed
@@ -381,15 +381,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             get() = RecyclerView.NO_ID
 
         /**
-         * An unique [Int] which will be used as viewType for the category(all items of the same type)
+         * An unique [Int] which will be used as item type for the category(all items of the same type)
          *
          * **NOTE:** The value should be unique across all [RecyclerItem] categories in one instance of [DiverseRecyclerAdapter].
-         * If you duplicate the viewTypes the [RecyclerView] will show invalid data
+         * If you duplicate the item types the [RecyclerView] will show invalid data
          *
          * @see android.support.v7.widget.RecyclerView.Adapter.getItemViewType
          */
         @get:IntRange(from = 0, to = Integer.MAX_VALUE.toLong())
-        open val itemType: Int
+        open val type: Int
             get() = 0
 
         /**
@@ -424,9 +424,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * You should update the UI of the recycler item here.
          *
          * **NOTE:** itemView click listener is preserved for adapter internal usage. If you need itemView click
-         * listener, you should override [ViewHolder.onItemViewClicked] or use child view of the itemView as click handler
+         * listener, you should override [ViewHolder.onItemViewClicked] or use a child view of the itemView as click handler
          *
-         * @param data The data object holding the information for the [ViewHolder]. This object is the one in [RecyclerItem.data]
+         * @param data The data object holding the information for the [ViewHolder]. This object is the one returned by [RecyclerItem.data]
          *
          * @see RecyclerView.Adapter.onBindViewHolder
          */
@@ -437,7 +437,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
 
         /**
-         * Called when the itemView of this [ViewHolder] has been attached to the parent
+         * Called when the itemView of this [ViewHolder] has been attached to it's parent
          *
          * This can be used as a reasonable signal that the view is about to be seen by the user. If the [ViewHolder] previously
          * freed any resources in [ViewHolder.onDetachedFromWindow] those resources should be restored here.

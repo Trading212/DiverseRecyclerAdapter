@@ -21,7 +21,7 @@ class ImageTextRecyclerItem(private val imageData: ImageData) :
         val TYPE = ItemType.IMAGE_TEXT.ordinal
     }
 
-    override val itemType: Int
+    override val type: Int
         get() = TYPE
 
     override val data: ImageData?
