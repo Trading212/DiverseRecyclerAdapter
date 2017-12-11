@@ -501,25 +501,5 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          */
         @CheckResult
         protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
-
-        interface Draggable {
-
-            /**
-             * Called before attempting a drag action. Use to dynamically enable/disable drag for the [ViewHolder]
-             *
-             * @return true to enable drag, false otherwise
-             */
-            val isDragEnabled: Boolean
-
-            /**
-             * Called when a drag action on the itemView of this [ViewHolder] start
-             */
-            fun onDragStart()
-
-            /**
-             * Called when the drag action on the itemView of this [ViewHolder] finished
-             */
-            fun onDragEnd()
-        }
     }
 }
