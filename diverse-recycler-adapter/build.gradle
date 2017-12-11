@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'diverse-recycler-adapter'
+
+    publishGroupId = 'com.trading212'
+    libraryName = 'DiverseRecyclerAdapter'
+    artifact = 'diverse-recycler-adapter'
+
+    libraryVersion = '0.5.0'
+    libraryDescription = 'RecyclerView adapter'
+
+    siteUrl = 'https://github.com/Trading212/diverse-recycler-adapter'
+    gitRepoUrl = 'https://github.com/Trading212/diverse-recycler-adapter.git'
+
+    developerId = 'trading212'
+    developerName = 'Trading 212'
+    developerEmail = 'svetlin.mollov@trading212.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName libraryVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "com.android.support:recyclerview-v7:26.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply from: "${rootDir}/gradle/install.gradle"
+apply from: "${rootDir}/gradle/bintray.gradle"

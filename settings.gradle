@@ -1,4 +1,1 @@
-include ':demo', ':diverserecycleradapter'
-
-
-
+include ':demo', ':diverse-recycler-adapter'
