@@ -25,9 +25,9 @@ class ActivityChooserRecyclerItem(private val activityInfo: ActivityInfo) :
 
     class ViewHolder(itemView: View) : DiverseRecyclerAdapter.ViewHolder<ActivityInfo>(itemView) {
 
-        var nameTextView = findViewById<TextView>(R.id.textView)
+        private var nameTextView = findViewById<TextView>(R.id.textView)
 
-        lateinit var activityInfo: ActivityInfo
+        private lateinit var activityInfo: ActivityInfo
 
         override fun bindTo(data: ActivityInfo?) {
             activityInfo = data!!

@@ -20,9 +20,6 @@ class SimpleImageRecyclerItem : DiverseRecyclerAdapter.RecyclerItem<Nothing, Sim
     override val type: Int
         get() = TYPE
 
-    override val data: Nothing?
-        get() = null
-
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder
             = ViewHolder(inflater.inflate(R.layout.item_simple_image, parent, false))
 

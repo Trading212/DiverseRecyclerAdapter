@@ -5,6 +5,7 @@ import android.support.annotation.IdRes
 import android.support.annotation.IntRange
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -28,7 +29,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
     // Used for optimizing the search of RecyclerItem by type
-    private val itemTypeItemMap = HashMap<Int, RecyclerItem<*, ViewHolder<*>>>()
+    private val itemTypeItemMap = SparseArray<RecyclerItem<*, ViewHolder<*>>>()
 
     private var filter: Filter? = null
 
@@ -43,7 +44,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         Log.i(TAG, "Creating ViewHolder of type " + viewType)
 
         // Get an instance of RecyclerItem of the specified type. It will be used as factory for ViewHolders
-        val recyclerItem = itemTypeItemMap[viewType]
+        val recyclerItem = itemTypeItemMap.get(viewType)
         if (recyclerItem != null) {
             return recyclerItem.createViewHolderInternal(parent)
         }
@@ -109,6 +110,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The [RecyclerItem] at the specified position in the adapter
      */
+    @Suppress("UNCHECKED_CAST")
     fun <RI : RecyclerItem<*, ViewHolder<*>>> getItem(position: Int): RI = recyclerItems[position] as RI
 
     /**
@@ -181,7 +183,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                     items: List<RecyclerItem<*, ViewHolder<*>>>,
                     notifyAdapter: Boolean = true) {
 
-        if (!items?.isEmpty()) {
+        if (!items.isEmpty()) {
             for (i in items.indices) {
                 insertItemInternal(position + i, items[i])
             }
@@ -190,7 +192,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                 notifyItemRangeInserted(position, items.size)
             }
         } else {
-            Log.e(TAG, "Trying to insert null or empty list at position $position")
+            Log.e(TAG, "Trying to insert empty list at position $position")
         }
     }
 
@@ -325,8 +327,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                 recyclerItems[position] = item
             }
 
-            if (itemTypeItemMap[item.type] == null) {
-                itemTypeItemMap[item.type] = item
+            if (itemTypeItemMap.get(item.type) == null) {
+                itemTypeItemMap.put(item.type, item)
             }
         } else {
             Log.e(TAG, "Trying to insert null item at position $position")
@@ -338,7 +340,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         val removed = recyclerItems.removeAt(position)
 
         // Clear cached category RecyclerItem, if this is the last item of the category
-        if (removed != null && findFirstItemTypePosition(removed.type) < 0) {
+        if (findFirstItemTypePosition(removed.type) < 0) {
             itemTypeItemMap.remove(removed.type)
         }
 
@@ -377,8 +379,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          *
          * @see RecyclerView.Adapter.getItemId
          */
-        open val id: Long
-            get() = RecyclerView.NO_ID
+        open val id: Long = RecyclerView.NO_ID
 
         /**
          * An unique [Int] which will be used as item type for the category(all items of the same type)
@@ -389,13 +390,12 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @see android.support.v7.widget.RecyclerView.Adapter.getItemViewType
          */
         @get:IntRange(from = 0, to = Integer.MAX_VALUE.toLong())
-        open val type: Int
-            get() = 0
+        open val type: Int = 0
 
         /**
          * An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed in [ViewHolder.bindTo]
          */
-        abstract val data: T?
+        open val data: T? = null
 
         /**
          * You should create a new [ViewHolder] for the corresponding [RecyclerItem]
@@ -433,6 +433,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected abstract fun bindTo(data: T?)
 
         internal fun bindToInternal(data: Any?) {
+            @Suppress("UNCHECKED_CAST")
             bindTo(data as T?)
         }
 
