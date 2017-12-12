@@ -17,8 +17,7 @@ class SimpleImageRecyclerItem : DiverseRecyclerAdapter.RecyclerItem<Nothing, Sim
         val TYPE = ItemType.SIMPLE_IMAGE.ordinal
     }
 
-    override val type: Int
-        get() = TYPE
+    override val type: Int = TYPE
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder
             = ViewHolder(inflater.inflate(R.layout.item_simple_image, parent, false))

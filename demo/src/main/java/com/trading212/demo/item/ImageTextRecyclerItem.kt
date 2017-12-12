@@ -12,7 +12,7 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 /**
  * Created by svetlin on 9.12.17.
  */
-class ImageTextRecyclerItem(private val imageData: ImageData) :
+class ImageTextRecyclerItem(imageData: ImageData) :
         DiverseRecyclerAdapter.RecyclerItem<ImageTextRecyclerItem.ImageData, ImageTextRecyclerItem.ViewHolder>() {
 
     companion object {
@@ -21,11 +21,9 @@ class ImageTextRecyclerItem(private val imageData: ImageData) :
         val TYPE = ItemType.IMAGE_TEXT.ordinal
     }
 
-    override val type: Int
-        get() = TYPE
+    override val type: Int = TYPE
 
-    override val data: ImageData?
-        get() = imageData
+    override val data: ImageData? = imageData
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder =
             ViewHolder(inflater.inflate(R.layout.item_image_text, parent, false))

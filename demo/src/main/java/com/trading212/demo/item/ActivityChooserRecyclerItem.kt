@@ -12,11 +12,10 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 /**
  * Created by svetlin on 9.12.17.
  */
-class ActivityChooserRecyclerItem(private val activityInfo: ActivityInfo) :
+class ActivityChooserRecyclerItem(activityInfo: ActivityInfo) :
         DiverseRecyclerAdapter.RecyclerItem<ActivityChooserRecyclerItem.ActivityInfo, ActivityChooserRecyclerItem.ViewHolder>() {
 
-    override val data: ActivityInfo?
-        get() = activityInfo
+    override val data: ActivityInfo? = activityInfo
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder =
             ViewHolder(inflater.inflate(R.layout.item_simple_text, parent, false))

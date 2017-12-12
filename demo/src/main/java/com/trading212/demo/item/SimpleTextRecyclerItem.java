@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by svetlin on 9.12.17.
  */
-
 public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, SimpleTextRecyclerItem.ViewHolder> {
 
     // Using Enum ordinal positions to guarantee uniqueness of item type
