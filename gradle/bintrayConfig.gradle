@@ -1,19 +1,21 @@
 ext {
     bintrayRepo = 'maven'
     bintrayName = 'diverse-recycler-adapter'
+    organization = 'trading-212'
 
     publishGroupId = 'com.trading212'
     libraryName = 'DiverseRecyclerAdapter'
     artifact = 'diverse-recycler-adapter'
 
-    libraryVersion = '0.5.0'
+    libraryVersion = '0.5.1'
     libraryDescription = 'A small and yet powerful library, which greatly simplifies building lists of different items'
 
     siteUrl = 'https://github.com/Trading212/diverse-recycler-adapter'
     gitRepoUrl = 'https://github.com/Trading212/diverse-recycler-adapter.git'
+    gitIssueTrackerUrl = 'https://github.com/Trading212/DiverseRecyclerAdapter/issues'
 
-    developerId = 'svetlin-mollov'
-    developerName = 'Svetlin Mollov'
+    developerId = 'trading212'
+    developerName = 'Trading 212'
     developerEmail = 'svetlin.mollov@trading212.com'
 
     licenseName = 'The Apache Software License, Version 2.0'
