@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: "${rootDir}/gradle/versionConfig.gradle"
 
 android {
 
-    compileSdkVersion 26
+    compileSdkVersion compile_sdk_version
 
     defaultConfig {
         applicationId "com.trading212.demo"
-        minSdkVersion 19
-        targetSdkVersion 26
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
 
@@ -23,14 +24,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
 }
 
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation "com.android.support:recyclerview-v7:26.1.0"
+    implementation "com.android.support:appcompat-v7:$android_support_version"
+    implementation "com.android.support:recyclerview-v7:$android_support_version"
 
     implementation project(path: ':diverse-recycler-adapter')
 }
