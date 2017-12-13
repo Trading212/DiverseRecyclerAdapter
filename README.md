@@ -8,7 +8,7 @@ Written in Kotlin, with full Java interoperability
 
 ## Installation
 
-```compile 'com.trading212:diverse-recycler-adapter:0.5.3'```
+```implementation 'com.trading212:diverse-recycler-adapter:0.5.3'```
 
 ## Getting Started
 
@@ -38,7 +38,9 @@ public class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> {
 
 ![ViewHolder lifecycle](docs/ViewHolderLifecycle.png)
 
-**Note:** Use should use `DiverseLinearLayoutManager`, `DiverseGridLayoutManager`, `DiverseStaggeredGridLayoutManager()` or a subclass in the hosting `RecyclerView.setLayoutManager` in order to have `ViewHolder`'s attach/detach events work correctly. Otherwise `ViewHolder.onDetachedFromWindow()` will not be called when the hosting `RecyclerView` is detached from window or it's layout manager changes. Alternatively, you can use any type of layout manager and delegate `RecyclerView.LayoutManager.onAttachedToWindow()`,  `RecyclerView.LayoutManager.onDetachedFromWindow()` to `delegateRecyclerViewAttachedToWindow()`, `delegateRecyclerViewDetachedFromWindow()` respectively.
+`ViewHolder.bindTo()`, `ViewHolder.onAttachedToWindow()` and `ViewHolder.onDetachedFromWindow()` are guaranteed to be called, while `ViewHolder.unbind()` is called only when the `ViewHolder` is going to be recycled(pushed to recycler view pool), i.e. prepared to be bound to another `RecyclerItem`, which may never happen. Thus, if you want to be shure that all resources are released as early as possible, you should use `ViewHolder.onDetachedFromWindow()` for that purpose. 
+
+**Note:** Use `DiverseLinearLayoutManager`, `DiverseGridLayoutManager`, `DiverseStaggeredGridLayoutManager()` or a subclass in the hosting `RecyclerView.setLayoutManager()` in order to have `ViewHolder`'s attach/detach events work correctly. Otherwise `ViewHolder.onDetachedFromWindow()` will not be called when the hosting `RecyclerView` is detached from it's parent. Alternatively, you can use any subclass of `LayoutManager` and delegate `LayoutManager.onAttachedToWindow()` and  `LayoutManager.onDetachedFromWindow()` events to `delegateRecyclerViewAttachedToWindow()` and `delegateRecyclerViewDetachedFromWindow()` respectively, which are located in `LayoutManagerUtil` class(Java only).
 
 ### RecyclerItem
 
