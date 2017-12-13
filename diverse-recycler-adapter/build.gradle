@@ -25,7 +25,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    provided "com.android.support:recyclerview-v7:$android_support_version"
+    compileOnly "com.android.support:recyclerview-v7:$android_support_version"
 }
 
 repositories {
