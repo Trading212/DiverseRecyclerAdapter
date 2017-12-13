@@ -12,8 +12,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter.RecyclerItem
+import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter.ViewHolder
+import com.trading212.diverserecycleradapter.layoutmanager.*
 import java.util.*
 
+/**
+ * RecyclerView adapter, which simplifies building lists of different items, by breaking each item type into
+ * separate [RecyclerItem]s, which makes the code easier to write, easier to maintain and better encapsulated
+ *
+ * **Note:** Use [DiverseLinearLayoutManager], [DiverseGridLayoutManager], [DiverseStaggeredGridLayoutManager] or a subclass
+ * in the hosting [RecyclerView.setLayoutManager] in order to have [ViewHolder]'s attach/detach events work correctly.
+ * Otherwise [ViewHolder.onDetachedFromWindow] will not be called when the hosting [RecyclerView] is detached from
+ * window or it's layout manager changes. Alternatively, you can use any type of layout manager and delegate
+ * [RecyclerView.LayoutManager.onAttachedToWindow] and [RecyclerView.LayoutManager.onDetachedFromWindow] to
+ * [delegateRecyclerViewAttachedToWindow] and [delegateRecyclerViewDetachedFromWindow] respectively
+ */
 class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewHolder<*>>(), Filterable {
 
     companion object {
@@ -22,7 +36,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     /**
-     * Listener to receive item click events.
+     * @property onItemClickListener Listener to receive item click events
      */
     var onItemClickListener: OnItemClickListener? = null
 
@@ -82,6 +96,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder<*>) {
+        // Safety check, in case holder is already attached. This can not happen, for now,
+        // but future changes to RecyclerView.Adapter may break this logic
+        if (holder.isAttached) return
 
         super.onViewAttachedToWindow(holder)
 
@@ -91,6 +108,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onViewDetachedFromWindow(holder: ViewHolder<*>) {
+        // Safety check, in case holder is already detached. This can not happen, for now,
+        // but future changes to RecyclerView.Adapter may break this logic
+        if (!holder.isAttached) return
 
         holder.onDetachedFromWindowInternal()
 
@@ -374,7 +394,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     abstract class RecyclerItem<T, out VH : ViewHolder<T>> {
 
         /**
-         * The stable ID for the item. If [hasStableIds] would return false this property should have [RecyclerView.NO_ID] value,
+         * @return The stable ID for the item. If [hasStableIds] would return false this property should have [RecyclerView.NO_ID] value,
          * which is the default value
          *
          * @see RecyclerView.Adapter.getItemId
@@ -393,7 +413,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open val type: Int = 0
 
         /**
-         * An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed in [ViewHolder.bindTo]
+         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed in [ViewHolder.bindTo]
          */
         open val data: T? = null
 
@@ -414,7 +434,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     abstract class ViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         /**
-         * `true` if the [ViewHolder]'s itemView is attached to the parent [RecyclerView]
+         * @return `true` if the [ViewHolder]'s itemView is attached to the parent [RecyclerView]
          * i.e. visible, `false` otherwise
          */
         var isAttached: Boolean = false
@@ -438,7 +458,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
 
         /**
-         * Called when the itemView of this [ViewHolder] has been attached to it's parent
+         * Called when the itemView of this [ViewHolder] is attached to it's parent
          *
          * This can be used as a reasonable signal that the view is about to be seen by the user. If the [ViewHolder] previously
          * freed any resources in [ViewHolder.onDetachedFromWindow] those resources should be restored here.
@@ -454,7 +474,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
 
         /**
-         * Called when the itemView of this [ViewHolder] has been detached from it's parent
+         * Called when the itemView of this [ViewHolder] is detached from it's parent
          *
          * Becoming detached from the window is not necessarily a permanent condition. The consumer of an Adapter's views may
          * choose to cache views offscreen while they are not visible, attaching an detaching them as appropriate.
