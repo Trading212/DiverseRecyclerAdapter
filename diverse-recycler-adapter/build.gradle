@@ -4,12 +4,11 @@ apply from: "${rootDir}/gradle/bintrayConfig.gradle"
 apply from: "${rootDir}/gradle/versionConfig.gradle"
 
 android {
+
     compileSdkVersion compile_sdk_version
 
     defaultConfig {
         minSdkVersion min_sdk_version
-        targetSdkVersion target_sdk_version
-        versionCode 1
         versionName libraryVersion
     }
 
@@ -22,8 +21,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly "com.android.support:recyclerview-v7:$android_support_version"
 }
