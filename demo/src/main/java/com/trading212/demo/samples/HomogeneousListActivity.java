@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by svetlin on 9.12.17.
  */
-
 public class HomogeneousListActivity extends BaseActivity {
 
     @Override

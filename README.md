@@ -38,6 +38,8 @@ public class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> {
 
 ![ViewHolder lifecycle](docs/ViewHolderLifecycle.png)
 
+**Note:** Use should use `DiverseLinearLayoutManager`, `DiverseGridLayoutManager`, `DiverseStaggeredGridLayoutManager()` or a subclass in the hosting `RecyclerView.setLayoutManager` in order to have `ViewHolder`'s attach/detach events work correctly. Otherwise `ViewHolder.onDetachedFromWindow()` will not be called when the hosting `RecyclerView` is detached from window or it's layout manager changes. Alternatively, you can use any type of layout manager and delegate `RecyclerView.LayoutManager.onAttachedToWindow()`,  `RecyclerView.LayoutManager.onDetachedFromWindow()` to `delegateRecyclerViewAttachedToWindow()`, `delegateRecyclerViewDetachedFromWindow()` respectively.
+
 ### RecyclerItem
 
 The `RecyclerItem` class describes a category(all items of the same type) in the adapter. It contains the data about a single item, as well as factory method for creating `ViewHolder`s for that category.
