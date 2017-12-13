@@ -119,11 +119,11 @@ adapter.removeRange(0, 5);
 ```java
 adapter.removeAll();
 ```
-- Find the position of the first `RecyclerItem` with the specified type, i.e. the position of the first item of a category
+- Find the adapter position of the first `RecyclerItem` with the specified type, i.e. the position of the first item of a category
 ```java
 adapter.findFirstItemTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
-- Find the position of the last `RecyclerItem` with the specified type, i.e. the position of the last item of a category
+- Find the adapter position of the last `RecyclerItem` with the specified type, i.e. the position of the last item of a category
 ```java
 adapter.findLastItemTypePosition(SimpleTextRecyclerItem.TYPE);
 ```
