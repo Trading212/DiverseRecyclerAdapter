@@ -8,7 +8,7 @@ Written in Kotlin, with full Java interoperability
 
 ## Installation
 
-```compile 'com.trading212:diverse-recycler-adapter:0.5.2'```
+```compile 'com.trading212:diverse-recycler-adapter:0.5.3'```
 
 ## Getting Started
 

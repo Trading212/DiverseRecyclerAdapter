@@ -7,7 +7,6 @@ ext {
     libraryName = 'DiverseRecyclerAdapter'
     artifact = 'diverse-recycler-adapter'
 
-    libraryVersion = '0.5.2'
     libraryDescription = 'A small and yet powerful library, which greatly simplifies building lists of different items'
 
     siteUrl = 'https://github.com/Trading212/diverse-recycler-adapter'

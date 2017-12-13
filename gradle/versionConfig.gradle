@@ -1,4 +1,6 @@
 ext {
+    libraryVersion = '0.5.3'
+
     android_support_version = '26.+'
 
     compile_sdk_version = 26
