@@ -40,6 +40,13 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      */
     var onItemClickListener: OnItemClickListener? = null
 
+    /**
+     * @property selectionMode TODO write KDoc
+     */
+    var selectionMode: SelectionMode? = null
+
+    private var recyclerView: RecyclerView? = null
+
     private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
     // Used for optimizing the search of RecyclerItem by type
@@ -52,6 +59,19 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, ViewHolder<*>>>(position).type
 
     override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, ViewHolder<*>>>(position).id
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+        super.onAttachedToRecyclerView(recyclerView)
+
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+
+        this.recyclerView = null
+
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<*> {
 
@@ -74,6 +94,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         holder.bindToInternal(item.data)
 
+        if (selectionMode != null && holder.isSelected != item.isSelected) {
+            if (holder is Selectable) {
+                holder.isSelected = item.isSelected
+                holder.onSelectedStateChanged(item.isSelected)
+            } else {
+                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+            }
+        }
+
         onItemClickListener?.let {
             holder.itemView.setOnTouchListener { v, event ->
                 it.onItemTouched(v, event, holder.adapterPosition)
@@ -83,6 +112,18 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         holder.itemView.setOnClickListener { v ->
             onItemClickListener?.onItemClicked(v, holder.adapterPosition)
             holder.onItemViewClickedInternal()
+
+            if (selectionMode != null && holder is Selectable) {
+                val selected = when (selectionMode) {
+
+                    SelectionMode.SINGLE -> true
+
+                    SelectionMode.MULTIPLE -> !item.isSelected
+
+                    else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
+                }
+                setItemSelected(item, selected)
+            }
         }
     }
 
@@ -96,6 +137,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder<*>) {
+
         // Safety check, in case holder is already attached. This can not happen, for now,
         // but future changes to RecyclerView.Adapter may break this logic
         if (holder.isAttached) return
@@ -108,6 +150,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onViewDetachedFromWindow(holder: ViewHolder<*>) {
+
         // Safety check, in case holder is already detached. This can not happen, for now,
         // but future changes to RecyclerView.Adapter may break this logic
         if (!holder.isAttached) return
@@ -335,7 +378,64 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         getItem<RecyclerItem<*, *>>(it).type == itemType
     } ?: -1
 
+    /**
+     * TODO write KDoc
+     */
+    fun getSelectedItems(): List<RecyclerItem<*, ViewHolder<*>>> = recyclerItems.filter { it.isSelected }
+
+    /**
+     * TODO write KDoc
+     */
+    fun setItemSelected(item: RecyclerItem<*, ViewHolder<*>>, selected: Boolean) {
+
+        if (selectionMode != null && item.isSelected != selected) {
+            if (selected) {
+                when (selectionMode) {
+
+                    SelectionMode.SINGLE -> {
+                        for (recyclerItem in recyclerItems) {
+                            recyclerItem.isSelected = recyclerItem == item
+                        }
+                    }
+
+                    SelectionMode.MULTIPLE -> item.isSelected = true
+                }
+            } else {
+                item.isSelected = false
+            }
+
+            notifySelectedItemsChanged()
+        }
+    }
+
+    private fun notifySelectedItemsChanged() {
+
+        if (recyclerView != null) {
+            val rv = recyclerView!!
+
+            val childCount = rv.childCount
+            (0 until childCount)
+                    .mapNotNull { rv.getChildAt(it) }
+                    .mapNotNull { rv.getChildViewHolder(it) }
+                    .forEach {
+
+                        val holder = it as ViewHolder<*>
+                        val item = getItem<RecyclerItem<*, ViewHolder<*>>>(it.adapterPosition)
+
+                        if (holder.isSelected != item.isSelected) {
+                            if (holder is Selectable) {
+                                holder.isSelected = item.isSelected
+                                holder.onSelectedStateChanged(item.isSelected)
+                            } else {
+                                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+                            }
+                        }
+                    }
+        }
+    }
+
     private fun insertItemInternal(position: Int, item: RecyclerItem<*, ViewHolder<*>>?) {
+
         if (position < 0 || position > itemCount) {
             throw IndexOutOfBoundsException("Invalid insertion position: $position. Adapter size is $itemCount")
         }
@@ -367,31 +467,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         return removed
     }
 
-    abstract class OnItemClickListener {
-
-        /**
-         * Called on itemView click event
-         *
-         * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
-         * @param position The position of the touched [RecyclerItem] in the adapter
-         */
-        abstract fun onItemClicked(v: View, position: Int)
-
-        /**
-         * Called on item touch event
-         *
-         * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
-         * @param event The [MotionEvent] on the itemView
-         * @param position The position of the touched [RecyclerItem] in the adapter
-         *
-         * @return `true` if the event is handled, `false` if the event is unhandled
-         *
-         * **NOTE:** Returning `true` will stop triggering of subsequent gesture events like [View.OnClickListener.onClick]
-         */
-        open fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
-    }
-
     abstract class RecyclerItem<T, out VH : ViewHolder<T>> {
+
+        internal var isSelected: Boolean = false
 
         /**
          * @return The stable ID for the item. If [hasStableIds] would return false this property should have [RecyclerView.NO_ID] value,
@@ -433,6 +511,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     abstract class ViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        internal var isSelected: Boolean = false
+
         /**
          * @return `true` if the [ViewHolder]'s itemView is attached to the parent [RecyclerView]
          * i.e. visible, `false` otherwise
@@ -453,6 +533,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected abstract fun bindTo(data: T?)
 
         internal fun bindToInternal(data: Any?) {
+
             @Suppress("UNCHECKED_CAST")
             bindTo(data as T?)
         }
@@ -468,6 +549,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected open fun onAttachedToWindow() {}
 
         internal fun onAttachedToWindowInternal() {
+
             isAttached = true
 
             onAttachedToWindow()
@@ -484,6 +566,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected open fun onDetachedFromWindow() {}
 
         internal fun onDetachedFromWindowInternal() {
+
             isAttached = false
 
             onDetachedFromWindow()
@@ -505,6 +588,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected open fun unbind() {}
 
         internal fun unbindInternal() {
+
             unbind()
         }
 
@@ -514,6 +598,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected open fun onItemViewClicked() {}
 
         internal fun onItemViewClickedInternal() {
+
             onItemViewClicked()
         }
 
@@ -522,5 +607,50 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          */
         @CheckResult
         protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
+    }
+
+    abstract class OnItemClickListener {
+
+        /**
+         * Called on itemView click event
+         *
+         * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
+         * @param position The position of the touched [RecyclerItem] in the adapter
+         */
+        abstract fun onItemClicked(v: View, position: Int)
+
+        /**
+         * Called on item touch event
+         *
+         * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
+         * @param event The [MotionEvent] on the itemView
+         * @param position The position of the touched [RecyclerItem] in the adapter
+         *
+         * @return `true` if the event is handled, `false` if the event is unhandled
+         *
+         * **NOTE:** Returning `true` will stop triggering of subsequent gesture events like [View.OnClickListener.onClick]
+         */
+        open fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
+    }
+
+    interface Selectable {
+
+        /**
+         * TODO write KDoc
+         */
+        fun onSelectedStateChanged(isSelected: Boolean)
+    }
+
+    enum class SelectionMode {
+
+        /**
+         * Only one item in the list can be selected
+         */
+        SINGLE,
+
+        /**
+         * Multiple items in the list can be selected
+         */
+        MULTIPLE
     }
 }
