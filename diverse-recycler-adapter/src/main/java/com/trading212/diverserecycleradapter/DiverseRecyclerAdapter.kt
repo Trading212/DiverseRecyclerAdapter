@@ -41,6 +41,14 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     var onItemClickListener: OnItemClickListener? = null
 
     /**
+     * @property onItemSelectionStateChangeListener Listener to receive item selection state change events
+     *
+     * @see SelectionMode
+     * @see Selectable
+     */
+    var onItemSelectionStateChangeListener: OnItemSelectionStateChangeListener? = null
+
+    /**
      * @property selectionMode TODO write KDoc
      */
     var selectionMode: SelectionMode? = null
@@ -97,7 +105,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         if (selectionMode != null && holder.isSelected != item.isSelected) {
             if (holder is Selectable) {
                 holder.isSelected = item.isSelected
-                holder.onSelectedStateChanged(item.isSelected)
+                holder.updateSelectionState(item.isSelected)
             } else {
                 throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
             }
@@ -110,10 +118,13 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
 
         holder.itemView.setOnClickListener { v ->
-            onItemClickListener?.onItemClicked(v, holder.adapterPosition)
+
             holder.onItemViewClickedInternal()
 
+            onItemClickListener?.onItemClicked(v, holder.adapterPosition)
+
             if (selectionMode != null && holder is Selectable) {
+
                 val selected = when (selectionMode) {
 
                     SelectionMode.SINGLE -> true
@@ -122,6 +133,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
                     else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
                 }
+
                 setItemSelected(item, selected)
             }
         }
@@ -425,7 +437,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                         if (holder.isSelected != item.isSelected) {
                             if (holder is Selectable) {
                                 holder.isSelected = item.isSelected
-                                holder.onSelectedStateChanged(item.isSelected)
+                                holder.updateSelectionState(item.isSelected)
+
+                                onItemSelectionStateChangeListener?.onItemSelectionStateChanged(holder.itemView, holder.adapterPosition, holder.isSelected)
                             } else {
                                 throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
                             }
@@ -491,7 +505,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open val type: Int = 0
 
         /**
-         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed in [ViewHolder.bindTo]
+         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed to [ViewHolder.bindTo]
          */
         open val data: T? = null
 
@@ -638,18 +652,26 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         /**
          * TODO write KDoc
          */
-        fun onSelectedStateChanged(isSelected: Boolean)
+        fun updateSelectionState(isSelected: Boolean)
+    }
+
+    interface OnItemSelectionStateChangeListener {
+
+        /**
+         * TODO write KDoc
+         */
+        fun onItemSelectionStateChanged(v: View, position: Int, isSelected: Boolean)
     }
 
     enum class SelectionMode {
 
         /**
-         * Only one item in the list can be selected
+         * Only one item in the list can be selected at a time
          */
         SINGLE,
 
         /**
-         * Multiple items in the list can be selected
+         * Multiple items in the list can be selected at a time
          */
         MULTIPLE
     }

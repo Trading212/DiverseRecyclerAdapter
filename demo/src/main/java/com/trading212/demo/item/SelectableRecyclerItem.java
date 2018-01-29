@@ -16,11 +16,11 @@ import org.jetbrains.annotations.Nullable;
  * Created by svetlin on 27.01.18.
  */
 
-public class SingleChoiceRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, SingleChoiceRecyclerItem.ViewHolder> {
+public class SelectableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, SelectableRecyclerItem.ViewHolder> {
 
     private String title;
 
-    public SingleChoiceRecyclerItem(String title) {
+    public SelectableRecyclerItem(String title) {
 
         this.title = title;
     }
@@ -39,7 +39,7 @@ public class SingleChoiceRecyclerItem extends DiverseRecyclerAdapter.RecyclerIte
     @NotNull
     @Override
     protected ViewHolder createViewHolder(@NotNull ViewGroup parent, @NotNull LayoutInflater inflater) {
-        return new ViewHolder(inflater.inflate(R.layout.intem_single_choice, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.item_selectable, parent, false));
     }
 
     public static class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> implements DiverseRecyclerAdapter.Selectable {
@@ -58,7 +58,7 @@ public class SingleChoiceRecyclerItem extends DiverseRecyclerAdapter.RecyclerIte
         }
 
         @Override
-        public void onSelectedStateChanged(boolean isSelected) {
+        public void updateSelectionState(boolean isSelected) {
             checkImageView.setVisibility(isSelected ? View.VISIBLE : View.INVISIBLE);
         }
     }

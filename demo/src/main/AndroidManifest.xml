@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".samples.HomogeneousListActivity" />
         <activity android:name=".samples.HeterogeneousListActivity" />
-        <activity android:name=".samples.SingleChoiceListActivity" />
+        <activity android:name=".samples.SingleSelectionListActivity" />
+        <activity android:name=".samples.MultipleSelectionListActivity" />
     </application>
 
 </manifest>
