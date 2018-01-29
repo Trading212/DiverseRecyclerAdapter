@@ -20,7 +20,7 @@ public class MultipleSelectionListActivity extends BaseActivity {
     public void fillElements(@NotNull DiverseRecyclerAdapter adapter) {
 
         adapter.setSelectionMode(DiverseRecyclerAdapter.SelectionMode.MULTIPLE);
-        adapter.setOnItemSelectionStateChangeListener(new ItemSelectionStateChangeListener(adapter));
+        adapter.setOnItemSelectionStateChangeListener(new ItemSelectionStateChangeListener());
 
         adapter.addItem(new SimpleTextRecyclerItem("Not selectable"));
 
@@ -36,16 +36,9 @@ public class MultipleSelectionListActivity extends BaseActivity {
 
     private class ItemSelectionStateChangeListener implements DiverseRecyclerAdapter.OnItemSelectionStateChangeListener {
 
-        private DiverseRecyclerAdapter adapter;
-
-        public ItemSelectionStateChangeListener(DiverseRecyclerAdapter adapter) {
-
-            this.adapter = adapter;
-        }
-
         @Override
         public void onItemSelectionStateChanged(@NotNull View v, int position, boolean isSelected) {
-            SelectableRecyclerItem recyclerItem = adapter.getItem(position);
+            SelectableRecyclerItem recyclerItem = getAdapter().getItem(position);
             String text = String.format("%s selection state change to %s",
                     recyclerItem.getData(),
                     isSelected ? "selected" : "unselected");
@@ -53,7 +46,7 @@ public class MultipleSelectionListActivity extends BaseActivity {
             Toast.makeText(v.getContext(), text, Toast.LENGTH_SHORT).show();
 
             StringBuilder selectedItems = new StringBuilder("Selected items:");
-            for (DiverseRecyclerAdapter.RecyclerItem<?, DiverseRecyclerAdapter.ViewHolder<?>> item : adapter.getSelectedItems()) {
+            for (DiverseRecyclerAdapter.RecyclerItem<?, DiverseRecyclerAdapter.ViewHolder<?>> item : getAdapter().getSelectedItems()) {
                 selectedItems.append("\n").append(item.getData());
             }
 

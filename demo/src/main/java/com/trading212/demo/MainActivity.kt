@@ -1,10 +1,7 @@
 package com.trading212.demo
 
 import com.trading212.demo.item.ActivityChooserRecyclerItem
-import com.trading212.demo.samples.HeterogeneousListActivity
-import com.trading212.demo.samples.HomogeneousListActivity
-import com.trading212.demo.samples.MultipleSelectionListActivity
-import com.trading212.demo.samples.SingleSelectionListActivity
+import com.trading212.demo.samples.*
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 
 class MainActivity : BaseActivity() {
@@ -15,6 +12,7 @@ class MainActivity : BaseActivity() {
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Heterogeneous List", HeterogeneousListActivity::class.java)), false)
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Single Selection List", SingleSelectionListActivity::class.java)), false)
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Multiple Selection List", MultipleSelectionListActivity::class.java)), false)
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Drag&Drop", DragAndDropActivity::class.java)), false)
 
         adapter.notifyDataSetChanged()
     }

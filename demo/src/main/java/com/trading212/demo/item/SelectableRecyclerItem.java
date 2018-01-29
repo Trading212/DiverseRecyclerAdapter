@@ -42,7 +42,7 @@ public class SelectableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         return new ViewHolder(inflater.inflate(R.layout.item_selectable, parent, false));
     }
 
-    public static class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> implements DiverseRecyclerAdapter.Selectable {
+    public static class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> implements DiverseRecyclerAdapter.ViewHolder.Selectable {
 
         private TextView titleTextView = findViewById(R.id.tvTitle);
 

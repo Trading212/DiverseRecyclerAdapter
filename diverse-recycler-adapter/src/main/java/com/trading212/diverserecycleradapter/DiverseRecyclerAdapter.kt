@@ -103,7 +103,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         holder.bindToInternal(item.data)
 
         if (selectionMode != null && holder.isSelected != item.isSelected) {
-            if (holder is Selectable) {
+            if (holder is ViewHolder.Selectable) {
                 holder.isSelected = item.isSelected
                 holder.updateSelectionState(item.isSelected)
             } else {
@@ -123,7 +123,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
             onItemClickListener?.onItemClicked(v, holder.adapterPosition)
 
-            if (selectionMode != null && holder is Selectable) {
+            if (selectionMode != null && holder is ViewHolder.Selectable) {
 
                 val selected = when (selectionMode) {
 
@@ -435,7 +435,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                         val item = getItem<RecyclerItem<*, ViewHolder<*>>>(it.adapterPosition)
 
                         if (holder.isSelected != item.isSelected) {
-                            if (holder is Selectable) {
+                            if (holder is ViewHolder.Selectable) {
                                 holder.isSelected = item.isSelected
                                 holder.updateSelectionState(item.isSelected)
 
@@ -621,6 +621,14 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          */
         @CheckResult
         protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
+
+        interface Selectable {
+
+            /**
+             * TODO write KDoc
+             */
+            fun updateSelectionState(isSelected: Boolean)
+        }
     }
 
     abstract class OnItemClickListener {
@@ -645,14 +653,6 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * **NOTE:** Returning `true` will stop triggering of subsequent gesture events like [View.OnClickListener.onClick]
          */
         open fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
-    }
-
-    interface Selectable {
-
-        /**
-         * TODO write KDoc
-         */
-        fun updateSelectionState(isSelected: Boolean)
     }
 
     interface OnItemSelectionStateChangeListener {
