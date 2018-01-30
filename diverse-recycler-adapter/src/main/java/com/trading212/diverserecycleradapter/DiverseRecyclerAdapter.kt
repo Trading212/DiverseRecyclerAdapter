@@ -309,13 +309,12 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         val size = recyclerItems.size
 
         if (fromPosition in 0 until size && toPosition in 0 until size) {
-            val swapTmp = recyclerItems.removeAt(fromPosition)
-            recyclerItems.add(toPosition, swapTmp)
+            val itemToMove = recyclerItems.removeAt(fromPosition)
+            recyclerItems.add(toPosition, itemToMove)
         } else {
             val error = "Moving item from $fromPosition to $toPosition failed! Items count was $size"
             Log.e(TAG, error)
         }
-
 
         if (notifyAdapter) {
             notifyItemMoved(fromPosition, toPosition)
