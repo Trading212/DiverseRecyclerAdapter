@@ -12,7 +12,7 @@ class MainActivity : BaseActivity() {
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Heterogeneous List", HeterogeneousListActivity::class.java)), false)
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Single Selection List", SingleSelectionListActivity::class.java)), false)
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Multiple Selection List", MultipleSelectionListActivity::class.java)), false)
-        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Drag&Drop", DragAndDropActivity::class.java)), false)
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Drag&Drop", DragToReorderActivity::class.java)), false)
 
         adapter.notifyDataSetChanged()
     }

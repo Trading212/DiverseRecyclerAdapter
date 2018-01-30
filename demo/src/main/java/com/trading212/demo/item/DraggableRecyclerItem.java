@@ -66,7 +66,7 @@ public class DraggableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<S
         }
 
         @Override
-        public boolean isDraggable() {
+        public boolean isDragEnabled() {
             return true;
         }
     }

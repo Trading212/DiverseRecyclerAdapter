@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by svetlin on 29.01.18.
  */
-public class DragAndDropActivity extends BaseActivity {
+public class DragToReorderActivity extends BaseActivity {
 
     private DragItemTouchHelperCallback dragHelperCallback;
 
@@ -30,7 +30,7 @@ public class DragAndDropActivity extends BaseActivity {
             @Override
             public void onItemMoved(int fromPosition, int toPosition) {
                 String message = String.format("Item moved from position %d to position %d", fromPosition, toPosition);
-                Toast.makeText(DragAndDropActivity.this, message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(DragToReorderActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
 

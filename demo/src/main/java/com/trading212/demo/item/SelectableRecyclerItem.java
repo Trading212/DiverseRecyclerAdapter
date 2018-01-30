@@ -15,19 +15,19 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Created by svetlin on 27.01.18.
  */
-
 public class SelectableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, SelectableRecyclerItem.ViewHolder> {
+
+    public static final int TYPE = ItemType.SELECTABLE.ordinal();
 
     private String title;
 
     public SelectableRecyclerItem(String title) {
-
         this.title = title;
     }
 
     @Override
     public int getType() {
-        return 7;
+        return TYPE;
     }
 
     @Nullable

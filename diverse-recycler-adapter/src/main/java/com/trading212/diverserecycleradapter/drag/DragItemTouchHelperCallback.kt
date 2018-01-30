@@ -15,10 +15,10 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
 
     var dragFlags: Int = ItemTouchHelper.UP or ItemTouchHelper.DOWN
 
-    override fun isItemViewSwipeEnabled(): Boolean = false
+    override fun isItemViewSwipeEnabled(): Boolean = false // Swipe is not supported, yet
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
-        // Do nothing. Not supported for now
+        // Do nothing. Not supported yet
     }
 
     override fun isLongPressDragEnabled(): Boolean = isDragWithLongPressEnabled && adapter.itemCount > 1
@@ -26,7 +26,7 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
     override fun getMovementFlags(recyclerView: RecyclerView?,
                                   viewHolder: RecyclerView.ViewHolder?): Int {
 
-        return if (viewHolder is Draggable && viewHolder.isDraggable()) {
+        return if (viewHolder is Draggable && viewHolder.isDragEnabled()) {
             val dragFlags = this.dragFlags
             makeMovementFlags(dragFlags, 0)
         } else {
@@ -38,7 +38,7 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
                         source: RecyclerView.ViewHolder?,
                         target: RecyclerView.ViewHolder?): Boolean {
 
-        if (source is Draggable && target is Draggable && target.isDraggable()) {
+        if (source is Draggable && target is Draggable && target.isDragEnabled()) {
 
             val fromPosition = source.adapterPosition
             val toPosition = target.adapterPosition
@@ -74,6 +74,9 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
 
     interface OnItemMoveListener {
 
-        fun onItemMoved(fromPosition: Int, toPosition: Int)
+        /**
+         * Called when item has been dragged form [fromAdapterPosition] to [toAdapterPosition]
+         */
+        fun onItemMoved(fromAdapterPosition: Int, toAdapterPosition: Int)
     }
 }
