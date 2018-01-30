@@ -44,12 +44,12 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @property onItemSelectionStateChangeListener Listener to receive item selection state change events
      *
      * @see SelectionMode
-     * @see Selectable
+     * @see ViewHolder.Selectable
      */
     var onItemSelectionStateChangeListener: OnItemSelectionStateChangeListener? = null
 
     /**
-     * @property selectionMode TODO write KDoc
+     * @property selectionMode Determines how many items in the list can be selected at one time
      */
     var selectionMode: SelectionMode? = null
 
@@ -57,7 +57,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
-    // Used for optimizing the search of RecyclerItem by type
+    // Used for optimizing the search for RecyclerItem by type
     private val itemTypeItemMap = SparseArray<RecyclerItem<*, ViewHolder<*>>>()
 
     private var filter: Filter? = null
@@ -399,12 +399,24 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     } ?: -1
 
     /**
-     * TODO write KDoc
+     * @return The list of selected items
+     *
+     * @see SelectionMode
+     * @see ViewHolder.Selectable
      */
     fun getSelectedItems(): List<RecyclerItem<*, ViewHolder<*>>> = recyclerItems.filter { it.isSelected }
 
     /**
-     * TODO write KDoc
+     * Changes the selection mode of the item at [position] to [selected] if it is different from the current one.
+     * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
+     */
+    fun setItemSelected(position: Int, selected: Boolean) {
+        setItemSelected(getItem(position) as RecyclerItem<*, ViewHolder<*>>, selected)
+    }
+
+    /**
+     * Changes the selection mode of the [item] to [selected] if it is different from the current one.
+     * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
     fun setItemSelected(item: RecyclerItem<*, ViewHolder<*>>, selected: Boolean) {
 
@@ -630,10 +642,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         @CheckResult
         protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
 
+        /**
+         * In order to support selection mode, the selectable [RecyclerItem]'s [ViewHolder] should implement this interface.
+         * Also [DiverseRecyclerAdapter.selectionMode] should be set
+         */
         interface Selectable {
 
             /**
-             * TODO write KDoc
+             * Called when the selection state of the item has changed to [isSelected].
+             * Child [ViewHolder]s should use this method to update it's state
              */
             fun updateSelectionState(isSelected: Boolean)
         }
@@ -666,7 +683,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     interface OnItemSelectionStateChangeListener {
 
         /**
-         * TODO write KDoc
+         * Called the the selection state of the [RecyclerItem] at [position] has changed to [isSelected]
+         *
+         * @param v The [ViewHolder]'s itemView which selection state has changed
+         * @param position The position in the adapter of the [RecyclerItem]
+         * @param isSelected The new selection state of the [RecyclerItem]
          */
         fun onItemSelectionStateChanged(v: View, position: Int, isSelected: Boolean)
     }
