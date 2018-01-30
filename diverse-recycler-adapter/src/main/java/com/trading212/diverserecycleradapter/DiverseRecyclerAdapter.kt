@@ -308,7 +308,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         val size = recyclerItems.size
 
-        if (fromPosition in 0..size && toPosition in 0..size) {
+        if (fromPosition in 0 until size && toPosition in 0 until size) {
             val swapTmp = recyclerItems[fromPosition]
             recyclerItems.removeAt(fromPosition)
             recyclerItems.add(toPosition, swapTmp)
