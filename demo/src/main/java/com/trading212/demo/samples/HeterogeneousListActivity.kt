@@ -12,7 +12,7 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 /**
  * Created by svetlin on 9.12.17.
  */
-class HeterogeneousActivity : BaseActivity() {
+class HeterogeneousListActivity : BaseActivity() {
 
     override fun fillElements(adapter: DiverseRecyclerAdapter) {
 

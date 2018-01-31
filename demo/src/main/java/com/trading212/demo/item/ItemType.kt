@@ -7,5 +7,6 @@ enum class ItemType {
 
     SIMPLE_TEXT,
     SIMPLE_IMAGE,
-    IMAGE_TEXT
+    IMAGE_TEXT,
+    SELECTABLE,
 }
