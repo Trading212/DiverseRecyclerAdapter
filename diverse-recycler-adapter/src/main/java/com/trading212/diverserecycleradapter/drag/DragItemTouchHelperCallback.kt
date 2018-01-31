@@ -27,7 +27,6 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
                                   viewHolder: RecyclerView.ViewHolder?): Int {
 
         return if (viewHolder is Draggable && viewHolder.isDragEnabled()) {
-            val dragFlags = this.dragFlags
             makeMovementFlags(dragFlags, 0)
         } else {
             makeMovementFlags(0, 0)

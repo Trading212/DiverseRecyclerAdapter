@@ -38,7 +38,8 @@ public class MultipleSelectionListActivity extends BaseActivity {
 
         @Override
         public void onItemSelectionStateChanged(@NotNull View v, int position, boolean isSelected) {
-            SelectableRecyclerItem recyclerItem = getAdapter().getItem(position);
+            DiverseRecyclerAdapter adapter = getAdapter();
+            SelectableRecyclerItem recyclerItem = adapter.getItem(position);
             String text = String.format("%s selection state change to %s",
                     recyclerItem.getData(),
                     isSelected ? "selected" : "unselected");
@@ -46,7 +47,7 @@ public class MultipleSelectionListActivity extends BaseActivity {
             Toast.makeText(v.getContext(), text, Toast.LENGTH_SHORT).show();
 
             StringBuilder selectedItems = new StringBuilder("Selected items:");
-            for (DiverseRecyclerAdapter.RecyclerItem<?, DiverseRecyclerAdapter.ViewHolder<?>> item : getAdapter().getSelectedItems()) {
+            for (DiverseRecyclerAdapter.RecyclerItem<?, DiverseRecyclerAdapter.ViewHolder<?>> item : adapter.getSelectedItems()) {
                 selectedItems.append("\n").append(item.getData());
             }
 

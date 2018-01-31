@@ -64,9 +64,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun getItemCount(): Int = recyclerItems.size
 
-    override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, ViewHolder<*>>>(position).type
+    override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, *>>(position).type
 
-    override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, ViewHolder<*>>>(position).id
+    override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, *>>(position).id
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -98,7 +98,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         Log.i(TAG, "Binding data for ViewHolder with type ${holder.itemViewType} at position $position")
 
-        val item = getItem<RecyclerItem<*, ViewHolder<*>>>(position)
+        val item = getItem<RecyclerItem<*, *>>(position)
 
         holder.bindToInternal(item.data)
 
@@ -111,9 +111,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             }
         }
 
-        onItemClickListener?.let {
+        onItemClickListener?.let { listener ->
             holder.itemView.setOnTouchListener { v, event ->
-                it.onItemTouched(v, event, holder.adapterPosition)
+                listener.onItemTouched(v, event, holder.adapterPosition)
             }
         }
 
@@ -383,8 +383,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the first [RecyclerItem] with the specified type or -1 if not found
      */
-    fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull {
-        getItem<RecyclerItem<*, *>>(it).type == itemType
+    fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull { position ->
+        getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
 
     /**
@@ -394,8 +394,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the last [RecyclerItem] with the specified type or -1 if not found
      */
-    fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull {
-        getItem<RecyclerItem<*, *>>(it).type == itemType
+    fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull { position ->
+        getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
 
     /**
@@ -407,15 +407,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     fun getSelectedItems(): List<RecyclerItem<*, ViewHolder<*>>> = recyclerItems.filter { it.isSelected }
 
     /**
-     * Changes the selection mode of the item at [position] to [selected] if it is different from the current one.
+     * Changes the selection state of the item at [position] to [selected] if it is different from the current one.
      * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
     fun setItemSelected(position: Int, selected: Boolean) {
-        setItemSelected(getItem(position) as RecyclerItem<*, ViewHolder<*>>, selected)
+        setItemSelected(getItem(position) as RecyclerItem<*, *>, selected)
     }
 
     /**
-     * Changes the selection mode of the [item] to [selected] if it is different from the current one.
+     * Changes the selection state of the [item] to [selected] if it is different from the current one.
      * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
     fun setItemSelected(item: RecyclerItem<*, ViewHolder<*>>, selected: Boolean) {
@@ -449,10 +449,10 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             (0 until childCount)
                     .mapNotNull { rv.getChildAt(it) }
                     .mapNotNull { rv.getChildViewHolder(it) }
-                    .forEach {
+                    .map { it as ViewHolder<*> }
+                    .forEach { holder ->
 
-                        val holder = it as ViewHolder<*>
-                        val item = getItem<RecyclerItem<*, ViewHolder<*>>>(it.adapterPosition)
+                        val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
 
                         if (holder.isSelected != item.isSelected) {
                             if (holder is ViewHolder.Selectable) {

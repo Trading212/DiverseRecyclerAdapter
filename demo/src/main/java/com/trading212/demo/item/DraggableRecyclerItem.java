@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DraggableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, DraggableRecyclerItem.ViewHolder> {
 
-    private String text;
+    private final String text;
 
     public DraggableRecyclerItem(String text) {
         this.text = text;
@@ -38,7 +38,7 @@ public class DraggableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<S
 
     public static class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> implements Draggable {
 
-        private TextView textView;
+        private final TextView textView;
 
         public ViewHolder(@NotNull View itemView) {
             super(itemView);
