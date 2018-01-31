@@ -410,7 +410,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * Changes the selection state of the item at [position] to [selected] if it is different from the current one.
      * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
-    fun setItemSelected(position: Int, selected: Boolean) {
+    fun setItemSelected(position: Int,
+                        selected: Boolean) {
+
         setItemSelected(getItem(position) as RecyclerItem<*, *>, selected)
     }
 
@@ -418,9 +420,47 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * Changes the selection state of the [item] to [selected] if it is different from the current one.
      * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
-    fun setItemSelected(item: RecyclerItem<*, ViewHolder<*>>, selected: Boolean) {
+    fun setItemSelected(item: RecyclerItem<*, ViewHolder<*>>,
+                        selected: Boolean) {
 
-        if (selectionMode != null && item.isSelected != selected) {
+        if (selectionMode != null) {
+
+            setItemSelectedInternal(item, selected)
+
+            notifySelectedItemsChanged()
+        }
+    }
+
+    /**
+     * Changes the selection state of the [items] to [selected] if it is different from the current one.
+     * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
+     */
+    fun setItemsSelected(items: List<RecyclerItem<*, ViewHolder<*>>>,
+                         selected: Boolean) {
+
+        if (selectionMode == SelectionMode.MULTIPLE && !items.isEmpty()) {
+
+            for (item in items) {
+                setItemSelectedInternal(item, selected)
+            }
+
+            notifySelectedItemsChanged()
+        }
+    }
+
+    /**
+     * Changes the selection state of the [items] to [selected] if it is different from the current one.
+     * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
+     */
+    fun setItemsSelected(selected: Boolean,
+                         vararg items: RecyclerItem<*, ViewHolder<*>>) {
+
+        setItemsSelected(listOf(*items), selected)
+    }
+
+    private fun setItemSelectedInternal(item: RecyclerItem<*, ViewHolder<*>>, selected: Boolean) {
+
+        if (item.isSelected != selected) {
             if (selected) {
                 when (selectionMode) {
 
@@ -435,8 +475,6 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             } else {
                 item.isSelected = false
             }
-
-            notifySelectedItemsChanged()
         }
     }
 
