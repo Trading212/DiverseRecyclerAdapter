@@ -30,7 +30,8 @@ public class SingleSelectionListActivity extends BaseActivity {
         adapter.notifyDataSetChanged();
 
         adapter.setItemSelected(adapter.getItem(1), true);
-        adapter.setItemSelected(adapter.getItem(2), true);
+
+        adapter.setItemsSelected(true, 2, 3); // This will select only 3 since SelectionMode is SINGLE
     }
 
     private class ItemSelectionStateChangeListener implements DiverseRecyclerAdapter.OnItemSelectionStateChangeListener {

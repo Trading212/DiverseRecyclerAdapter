@@ -32,6 +32,7 @@ public class MultipleSelectionListActivity extends BaseActivity {
         adapter.setItemSelected(adapter.getItem(1), true);
         adapter.setItemSelected(adapter.getItem(2), true);
 
+        adapter.setItemsSelected(true, 4, 5);
     }
 
     private class ItemSelectionStateChangeListener implements DiverseRecyclerAdapter.OnItemSelectionStateChangeListener {
