@@ -9,7 +9,7 @@ import android.util.AttributeSet
 /**
  * Created by svetlin.mollov on 12.12.2017 г..
  */
-class DiverseStaggeredGridLayoutManager : StaggeredGridLayoutManager {
+open class DiverseStaggeredGridLayoutManager : StaggeredGridLayoutManager {
 
     @JvmOverloads
     @Suppress("UNUSED")

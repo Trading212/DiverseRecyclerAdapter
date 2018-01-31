@@ -8,7 +8,7 @@ import android.util.AttributeSet
 /**
  * Created by svetlin.mollov on 12.12.2017 г..
  */
-class DiverseLinearLayoutManager : LinearLayoutManager {
+open class DiverseLinearLayoutManager : LinearLayoutManager {
 
     @JvmOverloads
     @Suppress("UNUSED")
