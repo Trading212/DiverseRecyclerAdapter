@@ -11,6 +11,8 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
 
     var onItemMoveListener: OnItemMoveListener? = null
 
+    var onItemDragListener: OnItemDragListener? = null
+
     var isDragWithLongPressEnabled: Boolean = true
 
     var dragFlags: Int = ItemTouchHelper.UP or ItemTouchHelper.DOWN
@@ -60,6 +62,8 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
 
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder is Draggable) {
             viewHolder.onDragStart()
+
+            onItemDragListener?.onItemDragStart(viewHolder.adapterPosition)
         }
     }
 
@@ -68,6 +72,8 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
 
         if (viewHolder is Draggable) {
             viewHolder.onDragFinish()
+
+            onItemDragListener?.onItemDragFinish(viewHolder.adapterPosition)
         }
     }
 
@@ -77,5 +83,18 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
          * Called when item has been dragged form [fromAdapterPosition] to [toAdapterPosition]
          */
         fun onItemMoved(fromAdapterPosition: Int, toAdapterPosition: Int)
+    }
+
+    interface OnItemDragListener {
+
+        /**
+         * Called when a drag action starts on the item at [adapterPosition]
+         */
+        fun onItemDragStart(adapterPosition: Int)
+
+        /**
+         * Called when the drag action on the item at [adapterPosition] has finished
+         */
+        fun onItemDragFinish(adapterPosition: Int)
     }
 }
