@@ -14,7 +14,7 @@ Version `0.9` also adds support and greatly simplifies *Drag to Reorder* UX patt
 
 ## Installation
 
-```implementation 'com.trading212:diverse-recycler-adapter:0.5.3'```
+```implementation 'com.trading212:diverse-recycler-adapter:0.9'```
 
 ## Getting Started
 
