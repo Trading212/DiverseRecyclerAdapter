@@ -9,7 +9,7 @@ import android.util.AttributeSet
 /**
  * Created by svetlin.mollov on 12.12.2017 г..
  */
-class DiverseGridLayoutManager : GridLayoutManager {
+open class DiverseGridLayoutManager : GridLayoutManager {
 
     @JvmOverloads
     @Suppress("UNUSED")
