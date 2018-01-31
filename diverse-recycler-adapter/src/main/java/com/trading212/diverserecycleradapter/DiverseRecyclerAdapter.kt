@@ -40,18 +40,46 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      */
     var onItemClickListener: OnItemClickListener? = null
 
+    /**
+     * @property onItemSelectionStateChangeListener Listener to receive item selection state change events
+     *
+     * @see SelectionMode
+     * @see ViewHolder.Selectable
+     */
+    var onItemSelectionStateChangeListener: OnItemSelectionStateChangeListener? = null
+
+    /**
+     * @property selectionMode Determines how many items in the list can be selected at one time
+     */
+    var selectionMode: SelectionMode? = null
+
+    private var recyclerView: RecyclerView? = null
+
     private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
-    // Used for optimizing the search of RecyclerItem by type
+    // Used for optimizing the search for RecyclerItem by type
     private val itemTypeItemMap = SparseArray<RecyclerItem<*, ViewHolder<*>>>()
 
     private var filter: Filter? = null
 
     override fun getItemCount(): Int = recyclerItems.size
 
-    override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, ViewHolder<*>>>(position).type
+    override fun getItemViewType(position: Int): Int = getItem<RecyclerItem<*, *>>(position).type
 
-    override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, ViewHolder<*>>>(position).id
+    override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, *>>(position).id
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+        super.onAttachedToRecyclerView(recyclerView)
+
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+
+        this.recyclerView = null
+
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<*> {
 
@@ -70,19 +98,44 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         Log.i(TAG, "Binding data for ViewHolder with type ${holder.itemViewType} at position $position")
 
-        val item = getItem<RecyclerItem<*, ViewHolder<*>>>(position)
+        val item = getItem<RecyclerItem<*, *>>(position)
 
         holder.bindToInternal(item.data)
 
-        onItemClickListener?.let {
+        if (selectionMode != null && holder.isSelected != item.isSelected) {
+            if (holder is ViewHolder.Selectable) {
+                holder.isSelected = item.isSelected
+                holder.updateSelectionState(item.isSelected)
+            } else {
+                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+            }
+        }
+
+        onItemClickListener?.let { listener ->
             holder.itemView.setOnTouchListener { v, event ->
-                it.onItemTouched(v, event, holder.adapterPosition)
+                listener.onItemTouched(v, event, holder.adapterPosition)
             }
         }
 
         holder.itemView.setOnClickListener { v ->
-            onItemClickListener?.onItemClicked(v, holder.adapterPosition)
+
             holder.onItemViewClickedInternal()
+
+            onItemClickListener?.onItemClicked(v, holder.adapterPosition)
+
+            if (selectionMode != null && holder is ViewHolder.Selectable) {
+
+                val selected = when (selectionMode) {
+
+                    SelectionMode.SINGLE -> true
+
+                    SelectionMode.MULTIPLE -> !item.isSelected
+
+                    else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
+                }
+
+                setItemSelected(item, selected)
+            }
         }
     }
 
@@ -96,6 +149,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder<*>) {
+
         // Safety check, in case holder is already attached. This can not happen, for now,
         // but future changes to RecyclerView.Adapter may break this logic
         if (holder.isAttached) return
@@ -108,6 +162,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onViewDetachedFromWindow(holder: ViewHolder<*>) {
+
         // Safety check, in case holder is already detached. This can not happen, for now,
         // but future changes to RecyclerView.Adapter may break this logic
         if (!holder.isAttached) return
@@ -306,7 +361,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                  @IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) toPosition: Int,
                  notifyAdapter: Boolean = true) {
 
-        Collections.swap(recyclerItems, fromPosition, toPosition)
+        val size = recyclerItems.size
+
+        if (fromPosition in 0 until size && toPosition in 0 until size) {
+            val itemToMove = recyclerItems.removeAt(fromPosition)
+            recyclerItems.add(toPosition, itemToMove)
+        } else {
+            val error = "Moving item from $fromPosition to $toPosition failed! Items count was $size"
+            Log.e(TAG, error)
+        }
 
         if (notifyAdapter) {
             notifyItemMoved(fromPosition, toPosition)
@@ -320,8 +383,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the first [RecyclerItem] with the specified type or -1 if not found
      */
-    fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull {
-        getItem<RecyclerItem<*, *>>(it).type == itemType
+    fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull { position ->
+        getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
 
     /**
@@ -331,11 +394,82 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the last [RecyclerItem] with the specified type or -1 if not found
      */
-    fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull {
-        getItem<RecyclerItem<*, *>>(it).type == itemType
+    fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull { position ->
+        getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
 
+    /**
+     * @return The list of selected items
+     *
+     * @see SelectionMode
+     * @see ViewHolder.Selectable
+     */
+    fun getSelectedItems(): List<RecyclerItem<*, ViewHolder<*>>> = recyclerItems.filter { it.isSelected }
+
+    /**
+     * Changes the selection state of the item at [position] to [selected] if it is different from the current one.
+     * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
+     */
+    fun setItemSelected(position: Int, selected: Boolean) {
+        setItemSelected(getItem(position) as RecyclerItem<*, *>, selected)
+    }
+
+    /**
+     * Changes the selection state of the [item] to [selected] if it is different from the current one.
+     * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
+     */
+    fun setItemSelected(item: RecyclerItem<*, ViewHolder<*>>, selected: Boolean) {
+
+        if (selectionMode != null && item.isSelected != selected) {
+            if (selected) {
+                when (selectionMode) {
+
+                    SelectionMode.SINGLE -> {
+                        for (recyclerItem in recyclerItems) {
+                            recyclerItem.isSelected = recyclerItem == item
+                        }
+                    }
+
+                    SelectionMode.MULTIPLE -> item.isSelected = true
+                }
+            } else {
+                item.isSelected = false
+            }
+
+            notifySelectedItemsChanged()
+        }
+    }
+
+    private fun notifySelectedItemsChanged() {
+
+        if (recyclerView != null) {
+            val rv = recyclerView!!
+
+            val childCount = rv.childCount
+            (0 until childCount)
+                    .mapNotNull { rv.getChildAt(it) }
+                    .mapNotNull { rv.getChildViewHolder(it) }
+                    .map { it as ViewHolder<*> }
+                    .forEach { holder ->
+
+                        val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
+
+                        if (holder.isSelected != item.isSelected) {
+                            if (holder is ViewHolder.Selectable) {
+                                holder.isSelected = item.isSelected
+                                holder.updateSelectionState(item.isSelected)
+
+                                onItemSelectionStateChangeListener?.onItemSelectionStateChanged(holder.itemView, holder.adapterPosition, holder.isSelected)
+                            } else {
+                                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+                            }
+                        }
+                    }
+        }
+    }
+
     private fun insertItemInternal(position: Int, item: RecyclerItem<*, ViewHolder<*>>?) {
+
         if (position < 0 || position > itemCount) {
             throw IndexOutOfBoundsException("Invalid insertion position: $position. Adapter size is $itemCount")
         }
@@ -367,6 +501,161 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         return removed
     }
 
+    abstract class RecyclerItem<T, out VH : ViewHolder<T>> {
+
+        internal var isSelected: Boolean = false
+
+        /**
+         * @return The stable ID for the item. If [hasStableIds] would return false this property should have [RecyclerView.NO_ID] value,
+         * which is the default value
+         *
+         * @see RecyclerView.Adapter.getItemId
+         */
+        open val id: Long = RecyclerView.NO_ID
+
+        /**
+         * An unique [Int] which will be used as item type for the category(all items of the same type)
+         *
+         * **NOTE:** The value should be unique across all [RecyclerItem] categories in one instance of [DiverseRecyclerAdapter].
+         * If you duplicate the item types the [RecyclerView] will show invalid data
+         *
+         * @see android.support.v7.widget.RecyclerView.Adapter.getItemViewType
+         */
+        @get:IntRange(from = 0, to = Integer.MAX_VALUE.toLong())
+        open val type: Int = 0
+
+        /**
+         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed to [ViewHolder.bindTo]
+         */
+        open val data: T? = null
+
+        /**
+         * You should create a new [ViewHolder] for the corresponding [RecyclerItem]
+         *
+         * @param parent The [ViewGroup] into which the [ViewHolder]'s itemView will be added after [ViewHolder] is bound to an adapter position
+         *
+         * @return A new [ViewHolder] that holds the [View] for the corresponding [RecyclerItem]
+         *
+         * @see android.support.v7.widget.RecyclerView.Adapter.onCreateViewHolder
+         */
+        protected abstract fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): VH
+
+        internal fun createViewHolderInternal(parent: ViewGroup): VH = createViewHolder(parent, LayoutInflater.from(parent.context))
+    }
+
+    abstract class ViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        internal var isSelected: Boolean = false
+
+        /**
+         * @return `true` if the [ViewHolder]'s itemView is attached to the parent [RecyclerView]
+         * i.e. visible, `false` otherwise
+         */
+        var isAttached: Boolean = false
+            private set
+
+        /**
+         * You should update the UI of the recycler item here.
+         *
+         * **NOTE:** itemView click listener is preserved for adapter internal usage. If you need itemView click
+         * listener, you should override [ViewHolder.onItemViewClicked] or use a child view of the itemView as click handler
+         *
+         * @param data The data object holding the information for the [ViewHolder]. This object is the one returned by [RecyclerItem.data]
+         *
+         * @see RecyclerView.Adapter.onBindViewHolder
+         */
+        protected abstract fun bindTo(data: T?)
+
+        internal fun bindToInternal(data: Any?) {
+
+            @Suppress("UNCHECKED_CAST")
+            bindTo(data as T?)
+        }
+
+        /**
+         * Called when the itemView of this [ViewHolder] is attached to it's parent
+         *
+         * This can be used as a reasonable signal that the view is about to be seen by the user. If the [ViewHolder] previously
+         * freed any resources in [ViewHolder.onDetachedFromWindow] those resources should be restored here.
+         *
+         * @see RecyclerView.Adapter.onViewAttachedToWindow
+         */
+        protected open fun onAttachedToWindow() {}
+
+        internal fun onAttachedToWindowInternal() {
+
+            isAttached = true
+
+            onAttachedToWindow()
+        }
+
+        /**
+         * Called when the itemView of this [ViewHolder] is detached from it's parent
+         *
+         * Becoming detached from the window is not necessarily a permanent condition. The consumer of an Adapter's views may
+         * choose to cache views offscreen while they are not visible, attaching an detaching them as appropriate.
+         *
+         * @see RecyclerView.Adapter.onViewDetachedFromWindow
+         */
+        protected open fun onDetachedFromWindow() {}
+
+        internal fun onDetachedFromWindowInternal() {
+
+            isAttached = false
+
+            onDetachedFromWindow()
+        }
+
+        /**
+         * Called just before this [ViewHolder] instance is going to be recycled.
+         *
+         * A view is recycled when a [android.support.v7.widget.RecyclerView.LayoutManager] decides that it no longer
+         * needs to be attached to it's parent [RecyclerView]. If an item view has large or expensive
+         * data bound to it such as large bitmaps, this is a good place to release those resources.
+         *
+         * [RecyclerView] calls this method right before clearing [ViewHolder]'s internal data and sending it to
+         * RecycledViewPool. This way, if ViewHolder was holding valid information before being recycled, you can call
+         * [ViewHolder.getAdapterPosition] to get its adapter position.
+         *
+         * @see RecyclerView.Adapter.onViewRecycled
+         */
+        protected open fun unbind() {}
+
+        internal fun unbindInternal() {
+
+            unbind()
+        }
+
+        /**
+         * Called when the itemView of the [ViewHolder] is clicked
+         */
+        protected open fun onItemViewClicked() {}
+
+        internal fun onItemViewClickedInternal() {
+
+            onItemViewClicked()
+        }
+
+        /**
+         * @return the [View] for the given resource id. Tries to cast it to the inferred type
+         */
+        @CheckResult
+        protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
+
+        /**
+         * In order to support selection mode, the selectable [RecyclerItem]'s [ViewHolder] should implement this interface.
+         * Also [DiverseRecyclerAdapter.selectionMode] should be set
+         */
+        interface Selectable {
+
+            /**
+             * Called when the selection state of the item has changed to [isSelected].
+             * Child [ViewHolder]s should use this method to update it's state
+             */
+            fun updateSelectionState(isSelected: Boolean)
+        }
+    }
+
     abstract class OnItemClickListener {
 
         /**
@@ -391,136 +680,28 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean = false
     }
 
-    abstract class RecyclerItem<T, out VH : ViewHolder<T>> {
+    interface OnItemSelectionStateChangeListener {
 
         /**
-         * @return The stable ID for the item. If [hasStableIds] would return false this property should have [RecyclerView.NO_ID] value,
-         * which is the default value
+         * Called the the selection state of the [RecyclerItem] at [position] has changed to [isSelected]
          *
-         * @see RecyclerView.Adapter.getItemId
+         * @param v The [ViewHolder]'s itemView which selection state has changed
+         * @param position The position in the adapter of the [RecyclerItem]
+         * @param isSelected The new selection state of the [RecyclerItem]
          */
-        open val id: Long = RecyclerView.NO_ID
-
-        /**
-         * An unique [Int] which will be used as item type for the category(all items of the same type)
-         *
-         * **NOTE:** The value should be unique across all [RecyclerItem] categories in one instance of [DiverseRecyclerAdapter].
-         * If you duplicate the item types the [RecyclerView] will show invalid data
-         *
-         * @see android.support.v7.widget.RecyclerView.Adapter.getItemViewType
-         */
-        @get:IntRange(from = 0, to = Integer.MAX_VALUE.toLong())
-        open val type: Int = 0
-
-        /**
-         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed in [ViewHolder.bindTo]
-         */
-        open val data: T? = null
-
-        /**
-         * You should create a new [ViewHolder] for the corresponding [RecyclerItem]
-         *
-         * @param parent The [ViewGroup] into which the [ViewHolder]'s itemView will be added after [ViewHolder] is bound to an adapter position
-         *
-         * @return A new [ViewHolder] that holds the [View] for the corresponding [RecyclerItem]
-         *
-         * @see android.support.v7.widget.RecyclerView.Adapter.onCreateViewHolder
-         */
-        protected abstract fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): VH
-
-        internal fun createViewHolderInternal(parent: ViewGroup): VH = createViewHolder(parent, LayoutInflater.from(parent.context))
+        fun onItemSelectionStateChanged(v: View, position: Int, isSelected: Boolean)
     }
 
-    abstract class ViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    enum class SelectionMode {
 
         /**
-         * @return `true` if the [ViewHolder]'s itemView is attached to the parent [RecyclerView]
-         * i.e. visible, `false` otherwise
+         * Only one item in the list can be selected at a time
          */
-        var isAttached: Boolean = false
-            private set
+        SINGLE,
 
         /**
-         * You should update the UI of the recycler item here.
-         *
-         * **NOTE:** itemView click listener is preserved for adapter internal usage. If you need itemView click
-         * listener, you should override [ViewHolder.onItemViewClicked] or use a child view of the itemView as click handler
-         *
-         * @param data The data object holding the information for the [ViewHolder]. This object is the one returned by [RecyclerItem.data]
-         *
-         * @see RecyclerView.Adapter.onBindViewHolder
+         * Multiple items in the list can be selected at a time
          */
-        protected abstract fun bindTo(data: T?)
-
-        internal fun bindToInternal(data: Any?) {
-            @Suppress("UNCHECKED_CAST")
-            bindTo(data as T?)
-        }
-
-        /**
-         * Called when the itemView of this [ViewHolder] is attached to it's parent
-         *
-         * This can be used as a reasonable signal that the view is about to be seen by the user. If the [ViewHolder] previously
-         * freed any resources in [ViewHolder.onDetachedFromWindow] those resources should be restored here.
-         *
-         * @see RecyclerView.Adapter.onViewAttachedToWindow
-         */
-        protected open fun onAttachedToWindow() {}
-
-        internal fun onAttachedToWindowInternal() {
-            isAttached = true
-
-            onAttachedToWindow()
-        }
-
-        /**
-         * Called when the itemView of this [ViewHolder] is detached from it's parent
-         *
-         * Becoming detached from the window is not necessarily a permanent condition. The consumer of an Adapter's views may
-         * choose to cache views offscreen while they are not visible, attaching an detaching them as appropriate.
-         *
-         * @see RecyclerView.Adapter.onViewDetachedFromWindow
-         */
-        protected open fun onDetachedFromWindow() {}
-
-        internal fun onDetachedFromWindowInternal() {
-            isAttached = false
-
-            onDetachedFromWindow()
-        }
-
-        /**
-         * Called just before this [ViewHolder] instance is going to be recycled.
-         *
-         * A view is recycled when a [android.support.v7.widget.RecyclerView.LayoutManager] decides that it no longer
-         * needs to be attached to it's parent [RecyclerView]. If an item view has large or expensive
-         * data bound to it such as large bitmaps, this is a good place to release those resources.
-         *
-         * [RecyclerView] calls this method right before clearing [ViewHolder]'s internal data and sending it to
-         * RecycledViewPool. This way, if ViewHolder was holding valid information before being recycled, you can call
-         * [ViewHolder.getAdapterPosition] to get its adapter position.
-         *
-         * @see RecyclerView.Adapter.onViewRecycled
-         */
-        protected open fun unbind() {}
-
-        internal fun unbindInternal() {
-            unbind()
-        }
-
-        /**
-         * Called when the itemView of the [ViewHolder] is clicked
-         */
-        protected open fun onItemViewClicked() {}
-
-        internal fun onItemViewClickedInternal() {
-            onItemViewClicked()
-        }
-
-        /**
-         * @return the [View] for the given resource id. Tries to cast it to the inferred type
-         */
-        @CheckResult
-        protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
+        MULTIPLE
     }
 }
