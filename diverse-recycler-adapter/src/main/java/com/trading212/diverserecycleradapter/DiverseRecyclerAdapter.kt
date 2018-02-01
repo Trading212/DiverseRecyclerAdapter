@@ -527,7 +527,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             if (position == recyclerItems.size) {
                 recyclerItems.add(item)
             } else {
-                recyclerItems[position] = item
+                recyclerItems.add(position, item)
             }
 
             if (itemTypeItemMap.get(item.type) == null) {
