@@ -68,13 +68,13 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, *>>(position).id
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
 
         this.recyclerView = recyclerView
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
 
         this.recyclerView = null
 
@@ -115,6 +115,10 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             holder.itemView.setOnTouchListener { v, event ->
                 listener.onItemTouched(v, event, holder.adapterPosition)
             }
+        }
+
+        holder.itemView.setOnLongClickListener { v ->
+            onItemClickListener?.onItemLongClicked(v, holder.adapterPosition) ?: false
         }
 
         holder.itemView.setOnClickListener { v ->
@@ -689,7 +693,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @return the [View] for the given resource id. Tries to cast it to the inferred type
          */
         @CheckResult
-        protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
+        protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id)
 
         /**
          * In order to support selection mode, the selectable [RecyclerItem]'s [ViewHolder] should implement this interface.
@@ -714,6 +718,14 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @param position The position of the touched [RecyclerItem] in the adapter
          */
         abstract fun onItemClicked(v: View, position: Int)
+
+        /**
+         * Called on itemView long click event
+         *
+         * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
+         * @param position The position of the touched [RecyclerItem] in the adapter
+         */
+        open fun onItemLongClicked(v: View, position: Int): Boolean = false
 
         /**
          * Called on item touch event

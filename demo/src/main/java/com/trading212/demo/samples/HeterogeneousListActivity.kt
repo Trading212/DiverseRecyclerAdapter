@@ -42,6 +42,21 @@ class HeterogeneousListActivity : BaseActivity() {
 
                 Toast.makeText(v.context, text, Toast.LENGTH_SHORT).show()
             }
+
+            override fun onItemLongClicked(v: View, position: Int): Boolean {
+
+                val text = when (adapter.getItemViewType(position)) {
+
+                    SimpleImageRecyclerItem.TYPE -> "Long clicked image at position $position"
+                    SimpleTextRecyclerItem.TYPE -> "Long clicked ${adapter.getItem<SimpleTextRecyclerItem>(position).data}"
+                    ImageTextRecyclerItem.TYPE -> "Long clicked  image ${adapter.getItem<ImageTextRecyclerItem>(position).data?.name}"
+                    else -> "Unknown item long clicked"
+                }
+
+                Toast.makeText(v.context, text, Toast.LENGTH_SHORT).show()
+
+                return true
+            }
         }
     }
 }

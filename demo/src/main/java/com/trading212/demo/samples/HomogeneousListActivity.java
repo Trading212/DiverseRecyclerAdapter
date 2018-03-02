@@ -29,6 +29,14 @@ public class HomogeneousListActivity extends BaseActivity {
                 SimpleTextRecyclerItem item = adapter.getItem(position);
                 Toast.makeText(v.getContext(), "Clicked " + item.getData(), Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public boolean onItemLongClicked(@NotNull View v, int position) {
+                SimpleTextRecyclerItem item = adapter.getItem(position);
+                Toast.makeText(v.getContext(), "Long clicked " + item.getData(), Toast.LENGTH_SHORT).show();
+
+                return true;
+            }
         });
     }
 }
