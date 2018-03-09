@@ -36,7 +36,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     /**
-     * @property onItemActionListener Listener to receive item click events
+     * @property onItemActionListener Listener to receive item action events
      */
     var onItemActionListener: OnItemActionListener? = null
 
@@ -715,7 +715,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     abstract class OnItemActionListener {
 
         /**
-         * Called on itemView click event
+         * Called on item click event
          *
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the touched [RecyclerItem] in the adapter
@@ -723,7 +723,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         abstract fun onItemClicked(v: View, position: Int)
 
         /**
-         * Called on itemView long click event
+         * Called on item long click event
          *
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the long clicked [RecyclerItem] in the adapter
@@ -731,7 +731,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open fun onItemLongClicked(v: View, position: Int): Boolean = false
 
         /**
-         * Called on itemView touch event
+         * Called on item touch event
          *
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param event The [MotionEvent] on the itemView
