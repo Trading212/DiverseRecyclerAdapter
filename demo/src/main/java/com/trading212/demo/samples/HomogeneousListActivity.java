@@ -21,7 +21,7 @@ public class HomogeneousListActivity extends BaseActivity {
         }
         adapter.notifyDataSetChanged();
 
-        adapter.setOnItemClickListener(new DiverseRecyclerAdapter.OnItemClickListener() {
+        adapter.setOnItemActionListener(new DiverseRecyclerAdapter.OnItemActionListener() {
 
             @Override
             public void onItemClicked(@NotNull View v, int position) {

@@ -1,7 +1,7 @@
 ext {
     libraryVersion = '0.9.5'
 
-    android_support_version = '27.+'
+    android_support_version = '27.1.0'
 
     compile_sdk_version = 27
     min_sdk_version = 15

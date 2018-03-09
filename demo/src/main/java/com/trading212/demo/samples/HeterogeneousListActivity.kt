@@ -28,7 +28,7 @@ class HeterogeneousListActivity : BaseActivity() {
 
         adapter.addItems(items)
 
-        adapter.onItemClickListener = object : DiverseRecyclerAdapter.OnItemClickListener() {
+        adapter.onItemActionListener = object : DiverseRecyclerAdapter.OnItemActionListener() {
 
             override fun onItemClicked(v: View, position: Int) {
 
