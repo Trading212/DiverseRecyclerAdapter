@@ -36,9 +36,9 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     /**
-     * @property onItemClickListener Listener to receive item click events
+     * @property onItemActionListener Listener to receive item action events
      */
-    var onItemClickListener: OnItemClickListener? = null
+    var onItemActionListener: OnItemActionListener? = null
 
     /**
      * @property onItemSelectionStateChangeListener Listener to receive item selection state change events
@@ -68,13 +68,13 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun getItemId(position: Int): Long = getItem<RecyclerItem<*, *>>(position).id
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView?) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
 
         this.recyclerView = recyclerView
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
 
         this.recyclerView = null
 
@@ -111,9 +111,16 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             }
         }
 
-        onItemClickListener?.let { listener ->
-            holder.itemView.setOnTouchListener { v, event ->
-                listener.onItemTouched(v, event, holder.adapterPosition)
+        onItemActionListener?.let { listener ->
+            holder.itemView.apply {
+
+                setOnTouchListener { v, event ->
+                    listener.onItemTouched(v, event, holder.adapterPosition)
+                }
+
+                setOnLongClickListener { v ->
+                    listener.onItemLongClicked(v, holder.adapterPosition)
+                }
             }
         }
 
@@ -121,7 +128,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
             holder.onItemViewClickedInternal()
 
-            onItemClickListener?.onItemClicked(v, holder.adapterPosition)
+            onItemActionListener?.onItemClicked(v, holder.adapterPosition)
 
             if (selectionMode != null && holder is ViewHolder.Selectable) {
 
@@ -689,7 +696,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @return the [View] for the given resource id. Tries to cast it to the inferred type
          */
         @CheckResult
-        protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id) as V?
+        protected fun <V : View> findViewById(@IdRes id: Int): V? = itemView.findViewById(id)
 
         /**
          * In order to support selection mode, the selectable [RecyclerItem]'s [ViewHolder] should implement this interface.
@@ -705,15 +712,23 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
     }
 
-    abstract class OnItemClickListener {
+    abstract class OnItemActionListener {
 
         /**
-         * Called on itemView click event
+         * Called on item click event
          *
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the touched [RecyclerItem] in the adapter
          */
         abstract fun onItemClicked(v: View, position: Int)
+
+        /**
+         * Called on item long click event
+         *
+         * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
+         * @param position The position of the long clicked [RecyclerItem] in the adapter
+         */
+        open fun onItemLongClicked(v: View, position: Int): Boolean = false
 
         /**
          * Called on item touch event

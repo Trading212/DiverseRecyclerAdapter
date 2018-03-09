@@ -141,11 +141,18 @@ if (adapter.getItemViewType(4) == SimpleTextRecyclerItem.TYPE) {
 ````
 - Handle `itemView` events
 ```java
-adapter.setOnItemClickListener(new DiverseRecyclerAdapter.OnItemClickListener() {
+adapter.setOnItemActionListener(new DiverseRecyclerAdapter.OnItemActionListener() {
     @Override
     public void onItemClicked(@NotNull View v, int position) {
         // Handle itemView click
     }
+    
+    @Override
+    public boolean onItemLongClicked(@NotNull View v, int position) {
+        // Handle itemView long click 
+        return super.onItemLongClicked();
+    }
+    
     @Override
     public boolean onItemTouched(@NotNull View v, @NotNull MotionEvent event, int position) {
         // Handle itemView touch events
