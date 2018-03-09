@@ -83,7 +83,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<*> {
 
-        Log.i(TAG, "Creating ViewHolder of type " + viewType)
+        Log.i(TAG, "Creating ViewHolder of type $viewType")
 
         // Get an instance of RecyclerItem of the specified type. It will be used as factory for ViewHolders
         val recyclerItem = itemTypeItemMap.get(viewType)
