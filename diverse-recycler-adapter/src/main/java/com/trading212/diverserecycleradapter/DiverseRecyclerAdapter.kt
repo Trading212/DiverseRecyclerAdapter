@@ -102,15 +102,6 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         holder.bindToInternal(item.data)
 
-        if (selectionMode != null && holder.isSelected != item.isSelected) {
-            if (holder is ViewHolder.Selectable) {
-                holder.isSelected = item.isSelected
-                holder.updateSelectionState(item.isSelected)
-            } else {
-                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
-            }
-        }
-
         onItemActionListener?.let { listener ->
             holder.itemView.apply {
 
@@ -162,6 +153,17 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         if (holder.isAttached) return
 
         super.onViewAttachedToWindow(holder)
+
+        // Update selection state, if it was changed while the item was not visible
+        val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
+        if (selectionMode != null && holder.isSelected != item.isSelected) {
+            if (holder is ViewHolder.Selectable) {
+                holder.isSelected = item.isSelected
+                holder.updateSelectionState(item.isSelected)
+            } else {
+                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+            }
+        }
 
         Log.i(TAG, "Item at position ${holder.layoutPosition} attached to window")
 
@@ -498,8 +500,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     private fun notifySelectedItemsChanged() {
 
-        if (recyclerView != null) {
-            val rv = recyclerView!!
+        recyclerView?.let { rv ->
 
             val childCount = rv.childCount
             (0 until childCount)
