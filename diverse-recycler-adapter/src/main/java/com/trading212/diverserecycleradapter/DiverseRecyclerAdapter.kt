@@ -155,13 +155,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         super.onViewAttachedToWindow(holder)
 
         // Update selection state, if it was changed while the item was not visible
-        val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
-        if (selectionMode != null && holder.isSelected != item.isSelected) {
-            if (holder is ViewHolder.Selectable) {
-                holder.isSelected = item.isSelected
-                holder.updateSelectionState(item.isSelected)
-            } else {
-                throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+        if (selectionMode != null && holder.adapterPosition != -1) {
+            val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
+            if (holder.isSelected != item.isSelected) {
+                if (holder is ViewHolder.Selectable) {
+                    holder.isSelected = item.isSelected
+                    holder.updateSelectionState(item.isSelected)
+                } else {
+                    throw IllegalStateException("ViewHolder of type ${item.type} has selection state, but does not implement Selectable interface!")
+                }
             }
         }
 
