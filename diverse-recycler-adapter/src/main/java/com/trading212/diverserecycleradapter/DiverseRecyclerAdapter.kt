@@ -723,7 +723,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the touched [RecyclerItem] in the adapter
          */
-        abstract fun onItemClicked(v: View, position: Int)
+        open fun onItemClicked(v: View, position: Int) {}
 
         /**
          * Called on item long click event
