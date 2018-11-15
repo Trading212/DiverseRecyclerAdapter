@@ -502,6 +502,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     private fun notifySelectedItemsChanged() {
 
+        val isUpdating = recyclerView?.hasPendingAdapterUpdates() ?: false
+
+        //Fix for crash when trying to update selection state
+        //while the RecyclerView is in an invalid UI state during update
+        if (isUpdating) {
+            recyclerView?.post { notifySelectedItemsChanged() }
+            return
+        }
+
         recyclerView?.let { rv ->
 
             val childCount = rv.childCount
