@@ -504,10 +504,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         val isUpdating = recyclerView?.hasPendingAdapterUpdates() ?: false
 
-        //Fix for crash when trying to update selection state
-        //while the RecyclerView is in an invalid UI state during update
+        // Fix for crash when trying to update selection state
+        // while the RecyclerView is in an invalid UI state during update
         if (isUpdating) {
             recyclerView?.post { notifySelectedItemsChanged() }
+
             return
         }
 
