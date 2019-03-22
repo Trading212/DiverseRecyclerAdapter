@@ -615,7 +615,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         internal fun createViewHolderInternal(parent: ViewGroup): VH = createViewHolder(parent, LayoutInflater.from(parent.context))
     }
 
-    abstract class ViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        /**
+         * The last data the [ViewHolder] was bound to or `null` if it was never bound.
+         * [lastData] is the same passed in [bindTo]
+         */
+        @Suppress("MemberVisibilityCanBePrivate")
+        protected var lastData: T? = null
+            private set
 
         internal var isSelected: Boolean = false
 
@@ -639,21 +647,31 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         protected abstract fun bindTo(data: T?)
 
         /**
-         * Called after [bindTo] if there was an update with a payload
+         * Called instead of [bindTo] if there was an update with a payload and the [lastData] is the same as [data]
          *
-         * **NOTE:** Both [bindTo] and this method will be called if you've called one of the notify change methods of the [RecyclerView.Adapter] with a payload
+         * Called after [bindTo] if there was an update with a payload and the [lastData] is NOT the same as [data]
          *
-         * **NOTE:** It's your responsibility to update [data] with [payloads] if needed
+         * **NOTE:** It's your responsibility to apply the [update] to the [data]
          */
-        protected open fun updateWith(data: T?, payloads: List<Any>) {}
+        protected open fun updateWith(data: T?, update: Any) {}
 
         @Suppress("UNCHECKED_CAST")
         internal fun bindToInternal(data: Any?, payloads: List<Any>) {
 
-            bindTo(data as T?)
-
             if (payloads.isNotEmpty()) {
-                updateWith(data as T?, payloads)
+                if (lastData === data) {
+                    updateWith(lastData, payloads.last())
+                } else {
+                    lastData = data as T?
+
+                    bindTo(lastData)
+
+                    updateWith(lastData, payloads.last())
+                }
+            } else {
+                lastData = data as T?
+
+                bindTo(lastData)
             }
         }
 

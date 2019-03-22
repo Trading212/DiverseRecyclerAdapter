@@ -12,8 +12,6 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /**
  * Created by svetlin on 9.12.17.
  */
@@ -61,10 +59,10 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         }
 
         @Override
-        protected void updateWith(@Nullable String data, @NotNull List<?> payloads) {
-            super.updateWith(data, payloads);
+        protected void updateWith(@Nullable String data, @NotNull Object update) {
+            super.updateWith(data, update);
 
-            PayloadUpdatesActivity.SimplePayload payload = (PayloadUpdatesActivity.SimplePayload) payloads.get(0);
+            PayloadUpdatesActivity.SimplePayload payload = (PayloadUpdatesActivity.SimplePayload) update;
 
             textView.setText(data + " - " + payload.getCounter());
         }
