@@ -6,10 +6,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trading212.demo.R;
+import com.trading212.demo.samples.PayloadUpdatesActivity;
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Created by svetlin on 9.12.17.
@@ -55,6 +58,19 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         @Override
         protected void bindTo(@Nullable String data) {
             textView.setText(data);
+        }
+
+        @Override
+        protected void bindTo(@Nullable String data, @NotNull List<?> payloads) {
+            super.bindTo(data, payloads);
+
+            if (payloads.isEmpty()) {
+                return;
+            }
+
+            PayloadUpdatesActivity.SimplePayload payload = (PayloadUpdatesActivity.SimplePayload) payloads.get(0);
+
+            textView.setText(data + " - " + payload.getCounter());
         }
     }
 }

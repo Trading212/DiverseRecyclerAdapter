@@ -95,12 +95,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onBindViewHolder(holder: ViewHolder<*>, position: Int) {
+        onBindViewHolder(holder, position, mutableListOf())
+    }
 
+    override fun onBindViewHolder(holder: ViewHolder<*>, position: Int, payloads: MutableList<Any>) {
         Log.i(TAG, "Binding data for ViewHolder with type ${holder.itemViewType} at position $position")
 
         val item = getItem<RecyclerItem<*, *>>(position)
 
-        holder.bindToInternal(item.data)
+        holder.bindToInternal(item.data, payloads)
 
         onItemActionListener?.let { listener ->
             holder.itemView.apply {
@@ -635,10 +638,21 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          */
         protected abstract fun bindTo(data: T?)
 
-        internal fun bindToInternal(data: Any?) {
+        /**
+         * Called after [bindTo] if there was an update with a payload
+         *
+         * **NOTE:** Both [bindTo] and this method will be called if you've called one of the notify methods of the [RecyclerView.Adapter] with a payload
+         */
+        protected open fun bindTo(data: T?, payload: List<Any>) {}
 
-            @Suppress("UNCHECKED_CAST")
+        @Suppress("UNCHECKED_CAST")
+        internal fun bindToInternal(data: Any?, payloads: List<Any>) {
+
             bindTo(data as T?)
+
+            if (payloads.isNotEmpty()) {
+                bindTo(data as T?, payloads)
+            }
         }
 
         /**

@@ -18,6 +18,7 @@
         </activity>
         <activity android:name=".samples.HomogeneousListActivity" />
         <activity android:name=".samples.HeterogeneousListActivity" />
+        <activity android:name=".samples.PayloadUpdatesActivity" />
         <activity android:name=".samples.SingleSelectionListActivity" />
         <activity android:name=".samples.MultipleSelectionListActivity" />
         <activity android:name=".samples.DragToReorderActivity" />
