@@ -61,8 +61,8 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         }
 
         @Override
-        protected void bindTo(@Nullable String data, @NotNull List<?> payloads) {
-            super.bindTo(data, payloads);
+        protected void updateWith(@Nullable String data, @NotNull List<?> payloads) {
+            super.updateWith(data, payloads);
 
             if (payloads.isEmpty()) {
                 return;

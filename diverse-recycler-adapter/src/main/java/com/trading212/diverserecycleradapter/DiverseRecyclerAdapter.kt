@@ -95,7 +95,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onBindViewHolder(holder: ViewHolder<*>, position: Int) {
-        onBindViewHolder(holder, position, mutableListOf())
+        onBindViewHolder(holder, position, ArrayList(0))
     }
 
     override fun onBindViewHolder(holder: ViewHolder<*>, position: Int, payloads: MutableList<Any>) {
@@ -597,7 +597,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open val type: Int = 0
 
         /**
-         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed to [ViewHolder.bindTo]
+         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed to [ViewHolder.updateWith]
          */
         open val data: T? = null
 
@@ -641,9 +641,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         /**
          * Called after [bindTo] if there was an update with a payload
          *
-         * **NOTE:** Both [bindTo] and this method will be called if you've called one of the notify methods of the [RecyclerView.Adapter] with a payload
+         * **NOTE:** Both [bindTo] and this method will be called if you've called one of the notify change methods of the [RecyclerView.Adapter] with a payload
+         *
+         * **NOTE:** It's your responsibility to update [data] with [payloads] if needed
          */
-        protected open fun bindTo(data: T?, payload: List<Any>) {}
+        protected open fun updateWith(data: T?, payloads: List<Any>) {}
 
         @Suppress("UNCHECKED_CAST")
         internal fun bindToInternal(data: Any?, payloads: List<Any>) {
@@ -651,7 +653,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
             bindTo(data as T?)
 
             if (payloads.isNotEmpty()) {
-                bindTo(data as T?, payloads)
+                updateWith(data as T?, payloads)
             }
         }
 

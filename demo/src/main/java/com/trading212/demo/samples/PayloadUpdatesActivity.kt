@@ -25,10 +25,6 @@ class PayloadUpdatesActivity : BaseActivity() {
 
                 adapter.notifyItemChanged(position, payload)
             }
-
-            override fun onItemLongClicked(v: View, position: Int): Boolean {
-                return true
-            }
         }
     }
 
