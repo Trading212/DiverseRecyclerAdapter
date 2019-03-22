@@ -64,10 +64,6 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         protected void updateWith(@Nullable String data, @NotNull List<?> payloads) {
             super.updateWith(data, payloads);
 
-            if (payloads.isEmpty()) {
-                return;
-            }
-
             PayloadUpdatesActivity.SimplePayload payload = (PayloadUpdatesActivity.SimplePayload) payloads.get(0);
 
             textView.setText(data + " - " + payload.getCounter());
