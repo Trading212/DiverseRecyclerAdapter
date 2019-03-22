@@ -95,12 +95,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     }
 
     override fun onBindViewHolder(holder: ViewHolder<*>, position: Int) {
+        onBindViewHolder(holder, position, ArrayList(0))
+    }
 
+    override fun onBindViewHolder(holder: ViewHolder<*>, position: Int, payloads: MutableList<Any>) {
         Log.i(TAG, "Binding data for ViewHolder with type ${holder.itemViewType} at position $position")
 
         val item = getItem<RecyclerItem<*, *>>(position)
 
-        holder.bindToInternal(item.data)
+        holder.bindToInternal(item.data, payloads)
 
         onItemActionListener?.let { listener ->
             holder.itemView.apply {
@@ -594,7 +597,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open val type: Int = 0
 
         /**
-         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed to [ViewHolder.bindTo]
+         * @return An object, containing the data to be displayed in related [ViewHolder]. The same object will be passed to [ViewHolder.updateWith]
          */
         open val data: T? = null
 
@@ -612,7 +615,15 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         internal fun createViewHolderInternal(parent: ViewGroup): VH = createViewHolder(parent, LayoutInflater.from(parent.context))
     }
 
-    abstract class ViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    abstract class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        /**
+         * The last data the [ViewHolder] was bound to or `null` if it was never bound.
+         * [lastData] is the same passed in [bindTo]
+         */
+        @Suppress("MemberVisibilityCanBePrivate")
+        protected var lastData: T? = null
+            private set
 
         internal var isSelected: Boolean = false
 
@@ -635,10 +646,33 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          */
         protected abstract fun bindTo(data: T?)
 
-        internal fun bindToInternal(data: Any?) {
+        /**
+         * Called instead of [bindTo] if there was an update with a payload and the [lastData] is the same as [data]
+         *
+         * Called after [bindTo] if there was an update with a payload and the [lastData] is NOT the same as [data]
+         *
+         * **NOTE:** It's your responsibility to apply the [update] to the [data]
+         */
+        protected open fun updateWith(data: T?, update: Any) {}
 
-            @Suppress("UNCHECKED_CAST")
-            bindTo(data as T?)
+        @Suppress("UNCHECKED_CAST")
+        internal fun bindToInternal(data: Any?, payloads: List<Any>) {
+
+            if (payloads.isNotEmpty()) {
+                if (lastData === data) {
+                    updateWith(lastData, payloads.last())
+                } else {
+                    lastData = data as T?
+
+                    bindTo(lastData)
+
+                    updateWith(lastData, payloads.last())
+                }
+            } else {
+                lastData = data as T?
+
+                bindTo(lastData)
+            }
         }
 
         /**

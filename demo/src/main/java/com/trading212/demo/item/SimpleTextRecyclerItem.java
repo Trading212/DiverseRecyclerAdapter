@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trading212.demo.R;
+import com.trading212.demo.samples.PayloadUpdatesActivity;
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter;
 
 import org.jetbrains.annotations.NotNull;
@@ -55,6 +56,15 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         @Override
         protected void bindTo(@Nullable String data) {
             textView.setText(data);
+        }
+
+        @Override
+        protected void updateWith(@Nullable String data, @NotNull Object update) {
+            super.updateWith(data, update);
+
+            PayloadUpdatesActivity.SimplePayload payload = (PayloadUpdatesActivity.SimplePayload) update;
+
+            textView.setText(data + " - " + payload.getCounter());
         }
     }
 }
