@@ -1,5 +1,5 @@
 ext {
-    libraryVersion = '0.9.9'
+    libraryVersion = '0.9.10'
 
     android_support_version = '27.1.0'
 
