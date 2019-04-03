@@ -105,37 +105,37 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
         holder.bindToInternal(item.data, payloads)
 
-        onItemActionListener?.let { listener ->
-            holder.itemView.apply {
+        holder.itemView.apply {
 
-                setOnTouchListener { v, event ->
-                    listener.onItemTouched(v, event, holder.adapterPosition)
-                }
-
-                setOnLongClickListener { v ->
-                    listener.onItemLongClicked(v, holder.adapterPosition)
-                }
+            setOnTouchListener { v, event ->
+                holder.onItemViewTouchedInternal(event)
+                        || onItemActionListener?.onItemTouched(v, event, holder.adapterPosition) == true
             }
-        }
 
-        holder.itemView.setOnClickListener { v ->
+            setOnLongClickListener { v ->
+                holder.onItemViewLongClickedInternal()
+                        || onItemActionListener?.onItemLongClicked(v, holder.adapterPosition) == true
+            }
 
-            holder.onItemViewClickedInternal()
+            setOnClickListener { v ->
 
-            onItemActionListener?.onItemClicked(v, holder.adapterPosition)
+                holder.onItemViewClickedInternal()
 
-            if (selectionMode != null && holder is ViewHolder.Selectable) {
+                onItemActionListener?.onItemClicked(v, holder.adapterPosition)
 
-                val selected = when (selectionMode) {
+                if (selectionMode != null && holder is ViewHolder.Selectable) {
 
-                    SelectionMode.SINGLE -> true
+                    val selected = when (selectionMode) {
 
-                    SelectionMode.MULTIPLE -> !item.isSelected
+                        SelectionMode.SINGLE -> true
 
-                    else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
+                        SelectionMode.MULTIPLE -> !item.isSelected
+
+                        else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
+                    }
+
+                    setItemSelected(item, selected)
                 }
-
-                setItemSelected(item, selected)
             }
         }
     }
@@ -740,6 +740,30 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         }
 
         /**
+         * Called when the itemView of the [ViewHolder] is long clicked
+         *
+         * **Note:** If the returned value is `true`, the [OnItemActionListener.onItemLongClicked]
+         * will not be called
+         *
+         * @return `true` if the event was handled, `false` otherwise
+         */
+        protected open fun onItemViewLongClicked(): Boolean = false
+
+        internal fun onItemViewLongClickedInternal(): Boolean = onItemViewLongClicked()
+
+        /**
+         * Called when the itemView of the [ViewHolder] is touched
+         *
+         * **Note:** If the returned value is `true`, the [OnItemActionListener.onItemTouched]
+         * will not be called
+         *
+         * @return `true` if the event was handled, `false` otherwise
+         */
+        protected open fun onItemViewTouched(event: MotionEvent): Boolean = false
+
+        internal fun onItemViewTouchedInternal(event: MotionEvent) = onItemViewTouched(event)
+
+        /**
          * @return the [View] for the given resource id. Tries to cast it to the inferred type
          */
         @CheckResult
@@ -770,7 +794,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open fun onItemClicked(v: View, position: Int) {}
 
         /**
-         * Called on item long click event
+         * Called on item long click event if [ViewHolder.onItemViewLongClicked] is not handled
          *
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param position The position of the long clicked [RecyclerItem] in the adapter
@@ -778,7 +802,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         open fun onItemLongClicked(v: View, position: Int): Boolean = false
 
         /**
-         * Called on item touch event
+         * Called on item touch event if [ViewHolder.onItemViewTouched] is not handled
          *
          * @param v The itemView of the [RecyclerItem]'s [ViewHolder]
          * @param event The [MotionEvent] on the itemView
