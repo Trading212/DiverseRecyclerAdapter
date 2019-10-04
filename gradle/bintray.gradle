@@ -1,51 +1,29 @@
-apply plugin: 'com.jfrog.bintray'
-
-version = libraryVersion
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    excludes = ['**/*.kt'] // Exclude all kotlin files from javadoc file.
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
+apply plugin: 'com.novoda.bintray-release'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
-bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+publish {
 
-    configurations = ['archives']
-    pkg {
-        repo = bintrayRepo
-        name = bintrayName
-        userOrg = organization
-        desc = libraryDescription
-        websiteUrl = siteUrl
-        vcsUrl = gitRepoUrl
-        issueTrackerUrl = gitIssueTrackerUrl
-        licenses = allLicenses
-        publish = true
-        override = true
-        publicDownloadNumbers = true
-        version {
-            name = libraryVersion
-            desc = libraryDescription
-        }
-    }
+    bintrayUser = properties.getProperty("bintray.user")
+    bintrayKey properties.getProperty("bintray.apikey")
+
+    publishVersion = libraryVersion
+
+    userOrg = 'trading-212'
+    repoName = 'maven'
+    artifactId = 'diverse-recycler-adapter'
+    groupId = 'com.trading212'
+    uploadName = 'diverse-recycler-adapter'
+
+    desc = 'A small and yet powerful library, which greatly simplifies building lists of different items'
+
+    website = 'https://github.com/Trading212/diverse-recycler-adapter'
+    repository = 'https://github.com/Trading212/diverse-recycler-adapter.git'
+    issueTracker = 'https://github.com/Trading212/DiverseRecyclerAdapter/issues'
+
+    licences = ['Apache-2.0']
 }
+
+// To publish the version first make sure you have the `bintray.user` and `bintray.apikey` properties set in the
+// `local.properties` file and then run: `gradlew clean build bintrayUpload -PdryRun=false`
