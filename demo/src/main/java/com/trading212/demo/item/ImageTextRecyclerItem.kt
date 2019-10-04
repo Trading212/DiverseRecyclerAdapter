@@ -1,6 +1,6 @@
 package com.trading212.demo.item
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

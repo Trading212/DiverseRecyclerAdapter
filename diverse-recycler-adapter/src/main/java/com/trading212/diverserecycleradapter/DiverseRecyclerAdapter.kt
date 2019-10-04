@@ -1,9 +1,9 @@
 package com.trading212.diverserecycleradapter
 
-import android.support.annotation.CheckResult
-import android.support.annotation.IdRes
-import android.support.annotation.IntRange
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.CheckResult
+import androidx.annotation.IdRes
+import androidx.annotation.IntRange
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater

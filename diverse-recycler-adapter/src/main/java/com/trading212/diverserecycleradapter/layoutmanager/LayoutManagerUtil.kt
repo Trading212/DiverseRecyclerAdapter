@@ -2,7 +2,7 @@
 
 package com.trading212.diverserecycleradapter.layoutmanager
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  *Call this method in [RecyclerView.LayoutManager.onAttachedToWindow]

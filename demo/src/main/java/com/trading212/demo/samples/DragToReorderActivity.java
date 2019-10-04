@@ -1,7 +1,9 @@
 package com.trading212.demo.samples;
 
 import android.os.Bundle;
-import android.support.v7.widget.helper.ItemTouchHelper;
+
+import androidx.recyclerview.widget.ItemTouchHelper;
+
 import android.widget.Toast;
 
 import com.trading212.demo.BaseActivity;
