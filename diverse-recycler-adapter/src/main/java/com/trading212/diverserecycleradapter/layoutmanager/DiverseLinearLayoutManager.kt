@@ -12,7 +12,7 @@ open class DiverseLinearLayoutManager : LinearLayoutManager {
 
     @JvmOverloads
     @Suppress("UNUSED")
-    constructor(context: Context, orientation: Int = LinearLayoutManager.VERTICAL, reverseLayout: Boolean = false) : super(context, orientation, reverseLayout)
+    constructor(context: Context, orientation: Int = VERTICAL, reverseLayout: Boolean = false) : super(context, orientation, reverseLayout)
 
     @Suppress("UNUSED")
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)

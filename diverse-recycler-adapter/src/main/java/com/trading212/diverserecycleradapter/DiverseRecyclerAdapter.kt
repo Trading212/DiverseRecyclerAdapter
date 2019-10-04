@@ -28,7 +28,7 @@ import java.util.*
  * [RecyclerView.LayoutManager.onAttachedToWindow] and [RecyclerView.LayoutManager.onDetachedFromWindow] to
  * [delegateRecyclerViewAttachedToWindow] and [delegateRecyclerViewDetachedFromWindow] respectively
  */
-class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewHolder<*>>(), Filterable {
+class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable {
 
     companion object {
 
@@ -190,6 +190,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun getFilter(): Filter? = filter
 
+    @Suppress("unused")
     fun setFilter(filter: Filter) {
         this.filter = filter
     }
@@ -234,6 +235,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param notifyAdapter Whether to notify the adapter about the change
      * @param items The items to add
      */
+    @Suppress("unused")
     @JvmOverloads
     fun addItems(notifyAdapter: Boolean = true,
                  vararg items: RecyclerItem<*, ViewHolder<*>>) {
@@ -272,7 +274,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                     items: List<RecyclerItem<*, ViewHolder<*>>>,
                     notifyAdapter: Boolean = true) {
 
-        if (!items.isEmpty()) {
+        if (items.isNotEmpty()) {
             for (i in items.indices) {
                 insertItemInternal(position + i, items[i])
             }
@@ -292,6 +294,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param notifyAdapter Whether to notify the adapter about the change
      * @param items The items to insert
      */
+    @Suppress("unused")
     @JvmOverloads
     fun insertItems(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
                     notifyAdapter: Boolean = true,
@@ -308,6 +311,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The removed [RecyclerItem] or null if not found
      */
+    @Suppress("unused")
     @JvmOverloads
     fun removeItem(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
                    notifyAdapter: Boolean = true): RecyclerItem<*, *>? {
@@ -360,6 +364,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The list of removed items. If there were no removed items, the list will be empty
      */
+    @Suppress("unused")
     @JvmOverloads
     fun removeAll(notifyAdapter: Boolean = true): List<RecyclerItem<*, ViewHolder<*>>> = removeRange(0, itemCount, notifyAdapter)
 
@@ -397,6 +402,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the first [RecyclerItem] with the specified type or -1 if not found
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull { position ->
         getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
@@ -408,6 +414,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the last [RecyclerItem] with the specified type or -1 if not found
      */
+    @Suppress("unused")
     fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull { position ->
         getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
@@ -442,7 +449,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     fun setItemsSelected(selected: Boolean,
                          vararg positions: Int) {
 
-        if (selectionMode != null && !positions.isEmpty()) {
+        if (selectionMode != null && positions.isNotEmpty()) {
 
             when (selectionMode) {
 
@@ -463,10 +470,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * Changes the selection state of the [items] to [selected] if it is different from the current one.
      * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
+    @Suppress("unused")
     fun setItemsSelected(items: List<RecyclerItem<*, ViewHolder<*>>>,
                          selected: Boolean) {
 
-        if (selectionMode != null && !items.isEmpty()) {
+        if (selectionMode != null && items.isNotEmpty()) {
 
             when (selectionMode) {
 
