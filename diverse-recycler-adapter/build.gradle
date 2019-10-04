@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply from: "${rootDir}/gradle/bintrayConfig.gradle"
+
 apply from: "${rootDir}/gradle/versionConfig.gradle"
 
 android {
@@ -22,12 +22,12 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compileOnly "com.android.support:recyclerview-v7:$android_support_version"
+
+    compileOnly "androidx.recyclerview:recyclerview:$androidx_support_version"
 }
 
 repositories {
     mavenCentral()
 }
 
-apply from: "${rootDir}/gradle/install.gradle"
 apply from: "${rootDir}/gradle/bintray.gradle"

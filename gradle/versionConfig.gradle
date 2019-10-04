@@ -1,9 +1,12 @@
 ext {
+
     libraryVersion = '0.9.11'
 
-    android_support_version = '27.1.0'
+    kotlin_version = '1.3.50'
 
-    compile_sdk_version = 27
+    androidx_support_version = '1.0.0'
+
+    compile_sdk_version = 28
     min_sdk_version = 15
-    target_sdk_version = 27
+    target_sdk_version = 28
 }

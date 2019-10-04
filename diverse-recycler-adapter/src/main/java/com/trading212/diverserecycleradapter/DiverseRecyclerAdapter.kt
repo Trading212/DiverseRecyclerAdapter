@@ -1,9 +1,5 @@
 package com.trading212.diverserecycleradapter
 
-import android.support.annotation.CheckResult
-import android.support.annotation.IdRes
-import android.support.annotation.IntRange
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
@@ -12,6 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.annotation.CheckResult
+import androidx.annotation.IdRes
+import androidx.annotation.IntRange
+import androidx.recyclerview.widget.RecyclerView
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter.RecyclerItem
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter.ViewHolder
 import com.trading212.diverserecycleradapter.layoutmanager.*
@@ -28,12 +28,7 @@ import java.util.*
  * [RecyclerView.LayoutManager.onAttachedToWindow] and [RecyclerView.LayoutManager.onDetachedFromWindow] to
  * [delegateRecyclerViewAttachedToWindow] and [delegateRecyclerViewDetachedFromWindow] respectively
  */
-class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewHolder<*>>(), Filterable {
-
-    companion object {
-
-        private val TAG = DiverseRecyclerAdapter::class.java.simpleName
-    }
+class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable {
 
     /**
      * @property onItemActionListener Listener to receive item action events
@@ -108,33 +103,45 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         holder.itemView.apply {
 
             setOnTouchListener { v, event ->
-                holder.onItemViewTouchedInternal(event)
-                        || onItemActionListener?.onItemTouched(v, event, holder.adapterPosition) == true
+                if (holder.adapterPosition != NO_POSITION) {
+                    holder.onItemViewTouchedInternal(event)
+                            || onItemActionListener?.onItemTouched(v, event, holder.adapterPosition) == true
+                }
+                else {
+                    false
+                }
             }
 
             setOnLongClickListener { v ->
-                holder.onItemViewLongClickedInternal()
-                        || onItemActionListener?.onItemLongClicked(v, holder.adapterPosition) == true
+                if (holder.adapterPosition != NO_POSITION) {
+                    holder.onItemViewLongClickedInternal()
+                            || onItemActionListener?.onItemLongClicked(v, holder.adapterPosition) == true
+                }
+                else {
+                    false
+                }
             }
 
             setOnClickListener { v ->
+                if (holder.adapterPosition != NO_POSITION) {
 
-                holder.onItemViewClickedInternal()
+                    holder.onItemViewClickedInternal()
 
-                onItemActionListener?.onItemClicked(v, holder.adapterPosition)
+                    onItemActionListener?.onItemClicked(v, holder.adapterPosition)
 
-                if (selectionMode != null && holder is ViewHolder.Selectable) {
+                    if (selectionMode != null && holder is ViewHolder.Selectable) {
 
-                    val selected = when (selectionMode) {
+                        val selected = when (selectionMode) {
 
-                        SelectionMode.SINGLE -> true
+                            SelectionMode.SINGLE -> true
 
-                        SelectionMode.MULTIPLE -> !item.isSelected
+                            SelectionMode.MULTIPLE -> !item.isSelected
 
-                        else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
+                            else -> throw IllegalStateException("Unknown selection mode ${selectionMode?.name}!")
+                        }
+
+                        setItemSelected(item, selected)
                     }
-
-                    setItemSelected(item, selected)
                 }
             }
         }
@@ -158,7 +165,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
         super.onViewAttachedToWindow(holder)
 
         // Update selection state, if it was changed while the item was not visible
-        if (selectionMode != null && holder.adapterPosition != -1) {
+        if (selectionMode != null && holder.adapterPosition != NO_POSITION) {
             val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
             if (holder.isSelected != item.isSelected) {
                 if (holder is ViewHolder.Selectable) {
@@ -190,6 +197,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
     override fun getFilter(): Filter? = filter
 
+    @Suppress("unused")
     fun setFilter(filter: Filter) {
         this.filter = filter
     }
@@ -234,6 +242,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param notifyAdapter Whether to notify the adapter about the change
      * @param items The items to add
      */
+    @Suppress("unused")
     @JvmOverloads
     fun addItems(notifyAdapter: Boolean = true,
                  vararg items: RecyclerItem<*, ViewHolder<*>>) {
@@ -272,7 +281,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
                     items: List<RecyclerItem<*, ViewHolder<*>>>,
                     notifyAdapter: Boolean = true) {
 
-        if (!items.isEmpty()) {
+        if (items.isNotEmpty()) {
             for (i in items.indices) {
                 insertItemInternal(position + i, items[i])
             }
@@ -292,6 +301,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * @param notifyAdapter Whether to notify the adapter about the change
      * @param items The items to insert
      */
+    @Suppress("unused")
     @JvmOverloads
     fun insertItems(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
                     notifyAdapter: Boolean = true,
@@ -308,6 +318,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The removed [RecyclerItem] or null if not found
      */
+    @Suppress("unused")
     @JvmOverloads
     fun removeItem(@IntRange(from = 0, to = Integer.MAX_VALUE.toLong()) position: Int,
                    notifyAdapter: Boolean = true): RecyclerItem<*, *>? {
@@ -360,6 +371,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The list of removed items. If there were no removed items, the list will be empty
      */
+    @Suppress("unused")
     @JvmOverloads
     fun removeAll(notifyAdapter: Boolean = true): List<RecyclerItem<*, ViewHolder<*>>> = removeRange(0, itemCount, notifyAdapter)
 
@@ -397,6 +409,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the first [RecyclerItem] with the specified type or -1 if not found
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun findFirstItemTypePosition(itemType: Int): Int = recyclerItems.indices.firstOrNull { position ->
         getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
@@ -408,6 +421,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      *
      * @return The index of the last [RecyclerItem] with the specified type or -1 if not found
      */
+    @Suppress("unused")
     fun findLastItemTypePosition(itemType: Int): Int = recyclerItems.indices.reversed().firstOrNull { position ->
         getItem<RecyclerItem<*, *>>(position).type == itemType
     } ?: -1
@@ -442,7 +456,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
     fun setItemsSelected(selected: Boolean,
                          vararg positions: Int) {
 
-        if (selectionMode != null && !positions.isEmpty()) {
+        if (selectionMode != null && positions.isNotEmpty()) {
 
             when (selectionMode) {
 
@@ -463,10 +477,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
      * Changes the selection state of the [items] to [selected] if it is different from the current one.
      * This will trigger a call to [ViewHolder.Selectable.updateSelectionState]
      */
+    @Suppress("unused")
     fun setItemsSelected(items: List<RecyclerItem<*, ViewHolder<*>>>,
                          selected: Boolean) {
 
-        if (selectionMode != null && !items.isEmpty()) {
+        if (selectionMode != null && items.isNotEmpty()) {
 
             when (selectionMode) {
 
@@ -519,9 +534,11 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
 
             val childCount = rv.childCount
             (0 until childCount)
+                    .asSequence()
                     .mapNotNull { rv.getChildAt(it) }
                     .mapNotNull { rv.getChildViewHolder(it) }
                     .map { it as ViewHolder<*> }
+                    .filter { it.adapterPosition != NO_POSITION }
                     .forEach { holder ->
 
                         val item = getItem<RecyclerItem<*, *>>(holder.adapterPosition)
@@ -838,5 +855,12 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<DiverseRecyclerAdapter.ViewH
          * Multiple items in the list can be selected at a time
          */
         MULTIPLE
+    }
+
+    companion object {
+
+        private val TAG = DiverseRecyclerAdapter::class.java.simpleName
+
+        private const val NO_POSITION = -1
     }
 }

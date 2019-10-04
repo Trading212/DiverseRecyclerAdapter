@@ -2,7 +2,7 @@
 
 package com.trading212.diverserecycleradapter.layoutmanager
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  *Call this method in [RecyclerView.LayoutManager.onAttachedToWindow]
@@ -13,7 +13,7 @@ fun delegateRecyclerViewAttachedToWindow(recyclerView: RecyclerView) {
     (0 until childCount)
             .mapNotNull { recyclerView.getChildAt(it) }
             .mapNotNull { recyclerView.getChildViewHolder(it) }
-            .forEach { recyclerView.adapter.onViewAttachedToWindow(it) }
+            .forEach { recyclerView.adapter?.onViewAttachedToWindow(it) }
 }
 
 /**
@@ -25,5 +25,5 @@ fun delegateRecyclerViewDetachedFromWindow(recyclerView: RecyclerView) {
     (0 until childCount)
             .mapNotNull { recyclerView.getChildAt(it) }
             .mapNotNull { recyclerView.getChildViewHolder(it) }
-            .forEach { recyclerView.adapter.onViewDetachedFromWindow(it) }
+            .forEach { recyclerView.adapter?.onViewDetachedFromWindow(it) }
 }
