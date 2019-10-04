@@ -12,7 +12,7 @@ open class DiverseStaggeredGridLayoutManager : StaggeredGridLayoutManager {
 
     @JvmOverloads
     @Suppress("UNUSED")
-    constructor(spanCount: Int, orientation: Int = VERTICAL) : super(spanCount, orientation)
+    constructor(spanCount: Int, orientation: Int = RecyclerView.VERTICAL) : super(spanCount, orientation)
 
     @Suppress("UNUSED")
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)

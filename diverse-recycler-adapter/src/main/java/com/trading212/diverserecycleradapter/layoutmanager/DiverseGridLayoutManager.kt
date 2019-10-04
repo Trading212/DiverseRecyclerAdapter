@@ -12,7 +12,7 @@ open class DiverseGridLayoutManager : GridLayoutManager {
 
     @JvmOverloads
     @Suppress("UNUSED")
-    constructor(context: Context, spanCount: Int, orientation: Int = VERTICAL, reverseLayout: Boolean = false) : super(context, spanCount, orientation, reverseLayout)
+    constructor(context: Context, spanCount: Int, orientation: Int = RecyclerView.VERTICAL, reverseLayout: Boolean = false) : super(context, spanCount, orientation, reverseLayout)
 
     @Suppress("UNUSED")
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
