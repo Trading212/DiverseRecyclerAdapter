@@ -22,6 +22,7 @@
         <activity android:name=".samples.SingleSelectionListActivity" />
         <activity android:name=".samples.MultipleSelectionListActivity" />
         <activity android:name=".samples.DragToReorderActivity" />
+        <activity android:name=".samples.ReplaceItemsActivity" />
     </application>
 
 </manifest>

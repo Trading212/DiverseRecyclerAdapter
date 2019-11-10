@@ -50,7 +50,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
 
     private var recyclerView: RecyclerView? = null
 
-    private val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
+    internal val recyclerItems = ArrayList<RecyclerItem<*, ViewHolder<*>>>()
 
     // Used for optimizing the search for RecyclerItem by type
     private val itemTypeItemMap = SparseArray<RecyclerItem<*, ViewHolder<*>>>()
@@ -106,8 +106,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
                 if (holder.adapterPosition != NO_POSITION) {
                     holder.onItemViewTouchedInternal(event)
                             || onItemActionListener?.onItemTouched(v, event, holder.adapterPosition) == true
-                }
-                else {
+                } else {
                     false
                 }
             }
@@ -116,8 +115,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
                 if (holder.adapterPosition != NO_POSITION) {
                     holder.onItemViewLongClickedInternal()
                             || onItemActionListener?.onItemLongClicked(v, holder.adapterPosition) == true
-                }
-                else {
+                } else {
                     false
                 }
             }

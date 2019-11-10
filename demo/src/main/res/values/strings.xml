@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DiverseRecyclerAdapter Demo</string>
+
+    <string name="btn_replace_items">Replace items</string>
 </resources>
