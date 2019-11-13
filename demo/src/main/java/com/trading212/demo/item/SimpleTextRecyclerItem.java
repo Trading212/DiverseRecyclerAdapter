@@ -31,6 +31,11 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         return TYPE;
     }
 
+    @Override
+    public long getId() {
+        return text.hashCode(); // OK for test purposes
+    }
+
     @Nullable
     @Override
     public String getData() {

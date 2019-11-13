@@ -23,7 +23,7 @@ fun DiverseRecyclerAdapter.replaceItems(items: List<RecyclerItem<*, ViewHolder<*
 
         override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
                 old[oldItemPosition].type == new[newItemPosition].type
-                        && old[oldItemPosition].data === new[newItemPosition].data
+                        && old[oldItemPosition].id == new[newItemPosition].id
 
         override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
                 old[oldItemPosition].data == new[newItemPosition].data
