@@ -1,5 +1,6 @@
 package com.trading212.demo.item;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import com.trading212.demo.samples.PayloadUpdatesActivity;
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by svetlin on 9.12.17.
@@ -22,8 +22,15 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
     private String text;
 
-    public SimpleTextRecyclerItem(String text) {
+    private boolean provideUniqueIds;
+
+    public SimpleTextRecyclerItem(String text, boolean provideUniqueIds) {
         this.text = text;
+        this.provideUniqueIds = provideUniqueIds;
+    }
+
+    public SimpleTextRecyclerItem(String text) {
+        this(text, true);
     }
 
     @Override
@@ -33,10 +40,10 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
     @Override
     public long getId() {
-        return text.hashCode(); // OK for test purposes
+        return provideUniqueIds? text.hashCode() : 0;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getData() {
         return text;
@@ -52,24 +59,29 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
         private TextView textView;
 
-        public ViewHolder(@NotNull View itemView) {
+        ViewHolder(@NotNull View itemView) {
             super(itemView);
 
             textView = findViewById(R.id.textView);
         }
 
         @Override
-        protected void bindTo(@Nullable String data) {
+        protected void bindTo(@NotNull String data) {
             textView.setText(data);
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
-        protected void updateWith(@Nullable String data, @NotNull Object update) {
+        protected void updateWith(@NotNull String data, @NotNull Object update) {
             super.updateWith(data, update);
+
+            if(!(update instanceof PayloadUpdatesActivity.SimplePayload)) {
+                return;
+            }
 
             PayloadUpdatesActivity.SimplePayload payload = (PayloadUpdatesActivity.SimplePayload) update;
 
-            textView.setText(data + " - " + payload.getCounter());
+            textView.setText(data + " - " + payload.getMessage());
         }
     }
 }

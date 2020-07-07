@@ -10,7 +10,6 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter;
 import com.trading212.diverserecycleradapter.drag.Draggable;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by svetlin on 29.01.18.
@@ -24,7 +23,7 @@ public class DraggableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<S
         this.text = text;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getData() {
         return text;
@@ -40,14 +39,14 @@ public class DraggableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<S
 
         private final TextView textView;
 
-        public ViewHolder(@NotNull View itemView) {
+        ViewHolder(@NotNull View itemView) {
             super(itemView);
 
             textView = findViewById(R.id.textView);
         }
 
         @Override
-        protected void bindTo(@Nullable String data) {
+        protected void bindTo(@NotNull String data) {
             textView.setText(data);
         }
 

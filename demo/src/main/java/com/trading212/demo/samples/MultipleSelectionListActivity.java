@@ -13,14 +13,13 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Created by svetlin on 27.01.18.
  */
-
 public class MultipleSelectionListActivity extends BaseActivity {
 
     @Override
     public void fillElements(@NotNull DiverseRecyclerAdapter adapter) {
 
         adapter.setSelectionMode(DiverseRecyclerAdapter.SelectionMode.MULTIPLE);
-        adapter.setOnItemSelectionStateChangeListener(new ItemSelectionStateChangeListener());
+        adapter.addOnItemSelectionStateChangeListener(new ItemSelectionStateChangeListener());
 
         adapter.addItem(new SimpleTextRecyclerItem("Not selectable"));
 

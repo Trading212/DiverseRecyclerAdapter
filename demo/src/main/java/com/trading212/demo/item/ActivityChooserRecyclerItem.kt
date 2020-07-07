@@ -15,7 +15,7 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 class ActivityChooserRecyclerItem(activityInfo: ActivityInfo) :
         DiverseRecyclerAdapter.RecyclerItem<ActivityChooserRecyclerItem.ActivityInfo, ActivityChooserRecyclerItem.ViewHolder>() {
 
-    override val data: ActivityInfo? = activityInfo
+    override val data: ActivityInfo = activityInfo
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder =
             ViewHolder(inflater.inflate(R.layout.item_simple_text, parent, false))
@@ -26,18 +26,16 @@ class ActivityChooserRecyclerItem(activityInfo: ActivityInfo) :
 
         private var nameTextView = findViewById<TextView>(R.id.textView)
 
-        private lateinit var activityInfo: ActivityInfo
-
-        override fun bindTo(data: ActivityInfo?) {
-            activityInfo = data!!
-
-            nameTextView?.text = activityInfo.name
+        override fun bindTo(data: ActivityInfo) {
+            nameTextView.text = data.name
         }
 
         override fun onItemViewClicked() {
             super.onItemViewClicked()
 
-            val intent = Intent(itemView.context, activityInfo.clazz)
+            val lastData = lastData ?: return
+
+            val intent = Intent(itemView.context, lastData.clazz)
             itemView.context.startActivity(intent)
         }
     }

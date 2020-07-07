@@ -15,6 +15,7 @@ class MainActivity : BaseActivity() {
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Multiple Selection List", MultipleSelectionListActivity::class.java)), false)
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Drag&Drop", DragToReorderActivity::class.java)), false)
         adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Replace all items", ReplaceItemsActivity::class.java)), false)
+        adapter.addItem(ActivityChooserRecyclerItem(ActivityChooserRecyclerItem.ActivityInfo("Replace all items with Payload", ReplaceItemsWithPayloadActivity::class.java)), false)
 
         adapter.notifyDataSetChanged()
     }

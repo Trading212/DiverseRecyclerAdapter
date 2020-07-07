@@ -34,7 +34,7 @@ public class ViewHolder extends DiverseRecyclerAdapter.ViewHolder<String> {
     }
 
     @Override
-    protected void bindTo(@Nullable String data) {
+    protected void bindTo(@NotNull String data) {
         textView.setText(data);
     }
 }

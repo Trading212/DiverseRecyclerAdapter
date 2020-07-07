@@ -1,13 +1,13 @@
 package com.trading212.demo.samples
 
-import android.view.View
 import com.trading212.demo.BaseActivity
 import com.trading212.demo.item.SimpleTextRecyclerItem
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
+import com.trading212.diverserecycleradapter.util.onItemClicked
 
 class PayloadUpdatesActivity : BaseActivity() {
 
-    private var payload = SimplePayload(0)
+    private var counter = 0
 
     override fun fillElements(adapter: DiverseRecyclerAdapter) {
 
@@ -17,18 +17,10 @@ class PayloadUpdatesActivity : BaseActivity() {
 
         adapter.notifyDataSetChanged()
 
-        adapter.onItemActionListener = object : DiverseRecyclerAdapter.OnItemActionListener() {
-
-            override fun onItemClicked(v: View, position: Int) {
-
-                payload = payload.increment()
-
-                adapter.notifyItemChanged(position, payload)
-            }
+        adapter.onItemClicked { _, position ->
+            adapter.notifyItemChanged(position, SimplePayload("${++counter}"))
         }
     }
 
-    class SimplePayload(val counter: Int) {
-        fun increment() = SimplePayload(counter + 1)
-    }
+    class SimplePayload(val message: String)
 }

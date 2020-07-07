@@ -11,7 +11,7 @@ import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 import com.trading212.diverserecycleradapter.layoutmanager.DiverseLinearLayoutManager
 import com.trading212.diverserecycleradapter.util.replaceItems
 
-class ReplaceItemsActivity : AppCompatActivity() {
+class ReplaceItemsWithPayloadActivity : AppCompatActivity() {
 
     private val adapter = DiverseRecyclerAdapter()
 
@@ -29,9 +29,14 @@ class ReplaceItemsActivity : AppCompatActivity() {
 
     fun replaceItems(@Suppress("UNUSED_PARAMETER") view: View) {
 
-        val items = (start..start + 9).map { SimpleTextRecyclerItem("Item $it") }
+        val items = (start..start + 9).map { SimpleTextRecyclerItem("Item $it", false) }
 
-        adapter.replaceItems(items)
+        adapter.replaceItems(
+                items = items,
+                itemChangePayloadProvider = { _, oldData, newData ->
+                    PayloadUpdatesActivity.SimplePayload("($oldData -> ${newData})")
+                }
+        )
 
         start += 5
     }

@@ -20,7 +20,7 @@ public class SingleSelectionListActivity extends BaseActivity {
     public void fillElements(@NotNull DiverseRecyclerAdapter adapter) {
 
         adapter.setSelectionMode(DiverseRecyclerAdapter.SelectionMode.SINGLE);
-        adapter.setOnItemSelectionStateChangeListener(new ItemSelectionStateChangeListener());
+        adapter.addOnItemSelectionStateChangeListener(new ItemSelectionStateChangeListener());
 
         adapter.addItem(new SimpleTextRecyclerItem("Not selectable"));
 

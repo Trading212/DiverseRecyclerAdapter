@@ -10,13 +10,13 @@ import com.trading212.demo.R;
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by svetlin on 27.01.18.
  */
 public class SelectableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<String, SelectableRecyclerItem.ViewHolder> {
 
+    @SuppressWarnings("WeakerAccess")
     public static final int TYPE = ItemType.SELECTABLE.ordinal();
 
     private String title;
@@ -30,7 +30,7 @@ public class SelectableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
         return TYPE;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String getData() {
         return title;
@@ -48,12 +48,12 @@ public class SelectableRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
         private ImageView checkImageView = findViewById(R.id.ivCheck);
 
-        public ViewHolder(@NotNull View itemView) {
+        ViewHolder(@NotNull View itemView) {
             super(itemView);
         }
 
         @Override
-        protected void bindTo(@Nullable String data) {
+        protected void bindTo(@NotNull String data) {
             titleTextView.setText(data);
         }
 

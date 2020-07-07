@@ -11,6 +11,7 @@ fun delegateRecyclerViewAttachedToWindow(recyclerView: RecyclerView) {
 
     val childCount = recyclerView.childCount
     (0 until childCount)
+            .asSequence()
             .mapNotNull { recyclerView.getChildAt(it) }
             .mapNotNull { recyclerView.getChildViewHolder(it) }
             .forEach { recyclerView.adapter?.onViewAttachedToWindow(it) }
@@ -23,6 +24,7 @@ fun delegateRecyclerViewDetachedFromWindow(recyclerView: RecyclerView) {
 
     val childCount = recyclerView.childCount
     (0 until childCount)
+            .asSequence()
             .mapNotNull { recyclerView.getChildAt(it) }
             .mapNotNull { recyclerView.getChildViewHolder(it) }
             .forEach { recyclerView.adapter?.onViewDetachedFromWindow(it) }

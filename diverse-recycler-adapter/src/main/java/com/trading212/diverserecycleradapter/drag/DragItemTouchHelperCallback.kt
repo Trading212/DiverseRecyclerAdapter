@@ -1,13 +1,15 @@
 package com.trading212.diverserecycleradapter.drag
 
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 
 /**
  * Created by svetlin on 29.01.18.
  */
-class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) : ItemTouchHelper.Callback() {
+class DragItemTouchHelperCallback(
+        private val adapter: DiverseRecyclerAdapter
+) : ItemTouchHelper.Callback() {
 
     var onItemMoveListener: OnItemMoveListener? = null
 
@@ -25,8 +27,7 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
 
     override fun isLongPressDragEnabled(): Boolean = isDragWithLongPressEnabled && adapter.itemCount > 1
 
-    override fun getMovementFlags(recyclerView: RecyclerView,
-                                  viewHolder: RecyclerView.ViewHolder): Int {
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
 
         return if (viewHolder is Draggable && viewHolder.isDragEnabled()) {
             makeMovementFlags(dragFlags, 0)
@@ -35,9 +36,11 @@ class DragItemTouchHelperCallback(private val adapter: DiverseRecyclerAdapter) :
         }
     }
 
-    override fun onMove(recyclerView: RecyclerView,
-                        source: RecyclerView.ViewHolder,
-                        target: RecyclerView.ViewHolder): Boolean {
+    override fun onMove(
+            recyclerView: RecyclerView,
+            source: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+    ): Boolean {
 
         if (source is Draggable && target is Draggable && target.isDragEnabled()) {
 

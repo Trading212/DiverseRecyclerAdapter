@@ -1,29 +1,24 @@
 package com.trading212.demo.item
 
-import androidx.annotation.DrawableRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import com.trading212.demo.R
 import com.trading212.diverserecycleradapter.DiverseRecyclerAdapter
 
 /**
  * Created by svetlin on 9.12.17.
  */
-class ImageTextRecyclerItem(imageData: ImageData) :
-        DiverseRecyclerAdapter.RecyclerItem<ImageTextRecyclerItem.ImageData, ImageTextRecyclerItem.ViewHolder>() {
-
-    companion object {
-
-        @JvmField
-        val TYPE = ItemType.IMAGE_TEXT.ordinal
-    }
+class ImageTextRecyclerItem(
+        imageData: ImageData
+) : DiverseRecyclerAdapter.RecyclerItem<ImageTextRecyclerItem.ImageData, ImageTextRecyclerItem.ViewHolder>() {
 
     override val type: Int = TYPE
 
-    override val data: ImageData? = imageData
+    override val data: ImageData = imageData
 
     override fun createViewHolder(parent: ViewGroup, inflater: LayoutInflater): ViewHolder =
             ViewHolder(inflater.inflate(R.layout.item_image_text, parent, false))
@@ -36,10 +31,16 @@ class ImageTextRecyclerItem(imageData: ImageData) :
 
         private val imageView = findViewById<ImageView>(R.id.imageView)
 
-        override fun bindTo(data: ImageData?) {
+        override fun bindTo(data: ImageData) {
 
-            textView?.text = data?.name
-            imageView?.setImageResource(data!!.resId)
+            textView.text = data.name
+            imageView.setImageResource(data.resId)
         }
+    }
+
+    companion object {
+
+        @JvmField
+        val TYPE = ItemType.IMAGE_TEXT.ordinal
     }
 }
