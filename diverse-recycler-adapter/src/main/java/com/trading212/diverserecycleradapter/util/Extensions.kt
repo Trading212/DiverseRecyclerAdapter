@@ -61,11 +61,11 @@ inline fun DiverseRecyclerAdapter.onItemLongClicked(crossinline onLongClick: (v:
 }
 
 inline fun DiverseRecyclerAdapter.onItemTouched(
-        crossinline onTouch: (v: View, event: MotionEvent, position: Int) -> Unit
+        crossinline onTouch: (v: View, event: MotionEvent, position: Int) -> Boolean
 ) {
     addOnItemActionListener(object : DiverseRecyclerAdapter.OnItemActionListener() {
         override fun onItemTouched(v: View, event: MotionEvent, position: Int): Boolean {
-            return onItemTouched(v, event, position)
+            return onTouch(v, event, position)
         }
     })
 }
