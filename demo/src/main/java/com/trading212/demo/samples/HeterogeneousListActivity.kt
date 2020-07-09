@@ -34,7 +34,7 @@ class HeterogeneousListActivity : BaseActivity() {
 
                 SimpleImageRecyclerItem.TYPE -> "Clicked image at position $position"
                 SimpleTextRecyclerItem.TYPE -> "Clicked ${adapter.getItem<SimpleTextRecyclerItem>(position).data}"
-                ImageTextRecyclerItem.TYPE -> "Clicked  image ${adapter.getItem<ImageTextRecyclerItem>(position).data?.name}"
+                ImageTextRecyclerItem.TYPE -> "Clicked  image ${adapter.getItem<ImageTextRecyclerItem>(position).data.name}"
                 else -> "Unknown item clicked"
             }
 
@@ -46,7 +46,7 @@ class HeterogeneousListActivity : BaseActivity() {
 
                 SimpleImageRecyclerItem.TYPE -> "Long clicked image at position $position"
                 SimpleTextRecyclerItem.TYPE -> "Long clicked ${adapter.getItem<SimpleTextRecyclerItem>(position).data}"
-                ImageTextRecyclerItem.TYPE -> "Long clicked  image ${adapter.getItem<ImageTextRecyclerItem>(position).data?.name}"
+                ImageTextRecyclerItem.TYPE -> "Long clicked  image ${adapter.getItem<ImageTextRecyclerItem>(position).data.name}"
                 else -> "Unknown item long clicked"
             }
 
