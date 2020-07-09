@@ -727,16 +727,18 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
 
             data as T
 
+            val isDataChanged = data != lastData
+
+            lastData = data
+
             if (payloads.isNotEmpty()) {
-                if (lastData !== data) {
+                if (isDataChanged) {
                     bindTo(data)
                 }
                 updateWith(data, payloads.last())
             } else {
                 bindTo(data)
             }
-
-            lastData = data
         }
 
         /**
