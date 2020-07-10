@@ -22,15 +22,8 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
     private String text;
 
-    private boolean provideUniqueIds;
-
-    public SimpleTextRecyclerItem(String text, boolean provideUniqueIds) {
-        this.text = text;
-        this.provideUniqueIds = provideUniqueIds;
-    }
-
     public SimpleTextRecyclerItem(String text) {
-        this(text, true);
+        this.text = text;
     }
 
     @Override
@@ -40,7 +33,7 @@ public class SimpleTextRecyclerItem extends DiverseRecyclerAdapter.RecyclerItem<
 
     @Override
     public long getId() {
-        return provideUniqueIds? text.hashCode() : 0;
+        return text.hashCode();
     }
 
     @NotNull
