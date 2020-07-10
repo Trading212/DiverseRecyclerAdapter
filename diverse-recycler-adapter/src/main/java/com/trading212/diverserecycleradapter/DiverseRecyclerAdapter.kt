@@ -714,11 +714,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
         protected abstract fun bindTo(data: T)
 
         /**
-         * Called instead of [bindTo] if there was an update with a payload and the [lastData] is the same as [data]
-         *
-         * Called after [bindTo] if there was an update with a payload and the [lastData] is NOT the same as [data]
-         *
-         * **NOTE:** It's your responsibility to apply the [update] to the [data]
+         * Called instead of [bindTo] if there was an update with a payload and the item is already bound to its [data],
+         * i.e. a partial update
          */
         protected open fun updateWith(data: T, update: Any) {}
 
@@ -727,15 +724,16 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
 
             data as T
 
-            val isDataChanged = data != lastData
+            val isFirstBind = lastData == null
 
             lastData = data
 
             if (payloads.isNotEmpty()) {
-                if (isDataChanged) {
+                if (isFirstBind) {
                     bindTo(data)
+                } else {
+                    updateWith(data, payloads.last())
                 }
-                updateWith(data, payloads.last())
             } else {
                 bindTo(data)
             }
@@ -794,6 +792,8 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
         internal fun unbindInternal() {
 
             unbind()
+
+            lastData = null
         }
 
         /**
