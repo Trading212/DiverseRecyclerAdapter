@@ -834,7 +834,7 @@ class DiverseRecyclerAdapter : RecyclerView.Adapter<ViewHolder<*>>(), Filterable
          * @return the [View] for the given resource id. Tries to cast it to the inferred type
          */
         @CheckResult
-        protected fun <V : View> findViewById(@IdRes id: Int): V = itemView.findViewById(id)
+        protected fun <V : View?> findViewById(@IdRes id: Int): V = itemView.findViewById(id)
 
         /**
          * In order to support selection mode, the selectable [RecyclerItem]'s [ViewHolder] should implement this
